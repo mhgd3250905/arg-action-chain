@@ -1,0 +1,16 @@
+.DS_Store
+Thumbs.db
+
+# Local runtime data
+.env
+.env.*
+*.log
+tmp/
+temp/
+output/
+.data/
+
+# Editor
+.idea/
+.vscode/
+
