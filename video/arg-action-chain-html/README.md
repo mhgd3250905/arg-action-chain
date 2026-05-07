@@ -35,7 +35,8 @@ index.html?slide=3&recording=1
 `make_video.py` 会：
 
 1. 用 Chrome/Edge 对每页 HTML 截图；
-2. 调用阿里百炼 `qwen3-tts-flash` 的 `multimodal-generation/generation` 接口生成旁白；
+2. 调用阿里百炼 `qwen3-tts-instruct-flash` 的 `multimodal-generation/generation` 接口生成旁白；
+   默认音色为 `Kai`，并通过 `instructions` 让语速偏快、节奏更适合知识分享视频；
 3. 用 `ffmpeg` 合成最终 MP4。
 
 运行：

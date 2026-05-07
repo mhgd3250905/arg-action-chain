@@ -16,11 +16,14 @@ ROOT = Path(__file__).resolve().parent
 REPO_ROOT = ROOT.parents[1]
 DEFAULT_KEY_FILE = REPO_ROOT.parent / "阿里tts-apikey.txt"
 API_URL = "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation"
-MODEL = "qwen3-tts-flash"
-VOICE = "Cherry"
+MODEL = "qwen3-tts-instruct-flash"
+VOICE = "Kai"
 LANGUAGE_TYPE = "Chinese"
+INSTRUCTIONS = "语速偏快，吐字清晰，节奏有推进感，像知识分享视频的男声旁白；不要拖腔，不要夸张表演。"
 WIDTH = 1920
 HEIGHT = 1080
+CHROME_HEIGHT = 984
+CAPTURE_CROP_HEIGHT = 889
 FPS = 30
 
 
@@ -76,7 +79,7 @@ def screenshot_slides(chrome: str, narration: list[dict[str, Any]], frames_dir: 
                 "--headless=new",
                 "--disable-gpu",
                 "--hide-scrollbars",
-                f"--window-size={WIDTH},{HEIGHT}",
+                f"--window-size={WIDTH},{CHROME_HEIGHT}",
                 f"--screenshot={out}",
                 url,
             ]
@@ -107,12 +110,8 @@ def audio_url_from_response(payload: Any) -> str:
     raise RuntimeError(f"响应里没有找到音频 URL: {json.dumps(payload, ensure_ascii=False)[:600]}")
 
 
-def synthesize_one(api_key: str, text: str, out_path: Path, force: bool) -> Path:
-    if out_path.exists() and not force:
-        print(f"[skip] 已存在音频 {out_path.name}")
-        return out_path
-
-    request_payload = {
+def tts_payload(text: str, instructions_in_input: bool) -> dict[str, Any]:
+    payload: dict[str, Any] = {
         "model": MODEL,
         "input": {
             "text": text,
@@ -120,6 +119,22 @@ def synthesize_one(api_key: str, text: str, out_path: Path, force: bool) -> Path
             "language_type": LANGUAGE_TYPE,
         },
     }
+    if instructions_in_input:
+        payload["input"]["instructions"] = INSTRUCTIONS
+        payload["input"]["optimize_instructions"] = True
+    else:
+        payload["parameters"] = {
+            "instructions": INSTRUCTIONS,
+            "optimize_instructions": True,
+        }
+    return payload
+
+
+def synthesize_one(api_key: str, text: str, out_path: Path, force: bool) -> Path:
+    if out_path.exists() and not force:
+        print(f"[skip] 已存在音频 {out_path.name}")
+        return out_path
+
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
@@ -127,7 +142,9 @@ def synthesize_one(api_key: str, text: str, out_path: Path, force: bool) -> Path
     last_error: Exception | None = None
     for attempt in range(1, 4):
         try:
-            response = requests.post(API_URL, headers=headers, json=request_payload, timeout=240)
+            response = requests.post(API_URL, headers=headers, json=tts_payload(text, True), timeout=240)
+            if response.status_code == 400 and "instructions" in response.text:
+                response = requests.post(API_URL, headers=headers, json=tts_payload(text, False), timeout=240)
             if response.status_code != 200:
                 raise RuntimeError(f"TTS 请求失败: HTTP {response.status_code} {response.text[:600]}")
 
@@ -184,8 +201,8 @@ def make_clip(ffmpeg: str, ffprobe: str, frame: Path, audio: Path, out: Path) ->
     duration = duration_seconds(ffprobe, audio)
     frames = max(int(duration * FPS), FPS)
     vf = (
-        f"scale={WIDTH}:{HEIGHT}:force_original_aspect_ratio=increase,"
-        f"crop={WIDTH}:{HEIGHT},"
+        f"crop={WIDTH}:{CAPTURE_CROP_HEIGHT}:0:0,"
+        f"scale={WIDTH}:{HEIGHT},"
         f"zoompan=z='min(zoom+0.00028,1.032)':d={frames}:s={WIDTH}x{HEIGHT}:fps={FPS},"
         "format=yuv420p"
     )

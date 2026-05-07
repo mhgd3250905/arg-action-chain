@@ -3,41 +3,39 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ARG 行动链路｜Agent 闯关式知识分享</title>
+  <title>ARG 行动链路｜把 Agent 放进一场可验证的游戏</title>
   <style>
     :root {
-      --bg: #080b10;
-      --paper: #f2e4bd;
-      --ink: #f7efe0;
-      --muted: #aeb8c8;
-      --cyan: #21d6ff;
-      --amber: #f6b744;
-      --red: #ff3d64;
-      --green: #5ee08d;
-      --violet: #9a7cff;
-      --panel: rgba(14, 20, 30, .82);
-      --line: rgba(174, 184, 200, .24);
-      --ease: cubic-bezier(.18, .82, .22, 1);
+      --bg: #07080a;
+      --ink: #fff4dd;
+      --soft: #b9c2cf;
+      --dim: #667080;
+      --line: rgba(255,255,255,.16);
+      --cyan: #27d8ff;
+      --gold: #f7b846;
+      --red: #ff3f5f;
+      --green: #53e28e;
+      --blue: #5277ff;
+      --panel: rgba(12, 16, 22, .78);
+      --glass: rgba(255,255,255,.055);
+      --ease: cubic-bezier(.16, .86, .24, 1);
     }
 
     * { box-sizing: border-box; }
 
-    html {
+    html,
+    body {
       width: 100%;
       height: 100%;
-      background: #080b10;
-    }
-
-    body {
+      min-height: 1080px;
       margin: 0;
-      width: 100%;
-      min-height: 100%;
       overflow: hidden;
-      color: var(--ink);
       background:
-        radial-gradient(circle at 18% 18%, rgba(33, 214, 255, .14), transparent 28%),
-        radial-gradient(circle at 78% 72%, rgba(246, 183, 68, .12), transparent 30%),
-        linear-gradient(135deg, #06080c 0%, #101724 48%, #070910 100%);
+        linear-gradient(115deg, rgba(39,216,255,.12), transparent 28%, transparent 70%, rgba(247,184,70,.10)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.045) 0 1px, transparent 1px 96px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.034) 0 1px, transparent 1px 96px),
+        linear-gradient(180deg, #10151d, #06070a 46%, #0a0b0f);
+      color: var(--ink);
       font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "SimHei", sans-serif;
     }
 
@@ -45,67 +43,78 @@
       content: "";
       position: fixed;
       inset: 0;
+      min-height: 1080px;
       pointer-events: none;
-      opacity: .25;
-      background-image:
-        linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
-      background-size: 52px 52px;
-      mask-image: radial-gradient(circle at center, black 0 58%, transparent 82%);
+      background:
+        linear-gradient(115deg, rgba(39,216,255,.12), transparent 28%, transparent 70%, rgba(247,184,70,.10)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.045) 0 1px, transparent 1px 96px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.034) 0 1px, transparent 1px 96px),
+        linear-gradient(180deg, #10151d, #06070a 46%, #0a0b0f);
     }
 
-    .stage {
+    body::after {
+      content: "";
       position: fixed;
       inset: 0;
-      width: 100%;
-      height: 100%;
-      padding: clamp(16px, 2vw, 30px);
+      min-height: 1080px;
+      pointer-events: none;
+      opacity: .38;
+      background:
+        linear-gradient(rgba(255,255,255,.035) 50%, transparent 50%) 0 0 / 100% 6px,
+        radial-gradient(ellipse at center, transparent 0 55%, rgba(0,0,0,.56) 100%);
+      mix-blend-mode: screen;
     }
 
     .deck {
-      position: relative;
-      width: 100%;
-      height: 100%;
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      min-height: 1080px;
       overflow: hidden;
-      border-radius: 28px;
-      border: 1px solid var(--line);
-      background:
-        linear-gradient(145deg, rgba(16, 24, 36, .96), rgba(6, 8, 12, .94)),
-        radial-gradient(circle at 20% 82%, rgba(33,214,255,.11), transparent 35%);
-      box-shadow: 0 40px 110px rgba(0,0,0,.55);
+      isolation: isolate;
     }
 
-    .deck::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: linear-gradient(90deg, rgba(255,255,255,.055), transparent 18%, transparent 82%, rgba(255,255,255,.035));
+    .capture-fill {
+      position: relative;
+      z-index: 0;
+      width: 100%;
+      height: 1400px;
+      background:
+        linear-gradient(115deg, rgba(39,216,255,.12), transparent 28%, transparent 70%, rgba(247,184,70,.10)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.045) 0 1px, transparent 1px 96px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.034) 0 1px, transparent 1px 96px),
+        linear-gradient(180deg, #10151d, #06070a 46%, #0a0b0f);
     }
 
     .slide {
       position: absolute;
       inset: 0;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(420px, .75fr);
-      gap: clamp(26px, 4vw, 68px);
-      padding: clamp(46px, 6vw, 90px);
+      grid-template-columns: minmax(0, 1fr) minmax(460px, .82fr);
+      gap: clamp(24px, 4vw, 76px);
+      align-items: center;
+      padding: clamp(54px, 6vw, 98px);
       opacity: 0;
-      transform: translateX(48px) scale(.985);
-      transition: opacity .55s var(--ease), transform .7s var(--ease);
+      transform: translate3d(0, 26px, 0) scale(.985);
+      transition: opacity .55s var(--ease), transform .55s var(--ease);
       pointer-events: none;
     }
 
     .slide.active {
       opacity: 1;
-      transform: translateX(0) scale(1);
+      transform: translate3d(0,0,0) scale(1);
       pointer-events: auto;
     }
 
-    .slide.center,
-    .slide.hero {
+    .slide.center {
       grid-template-columns: 1fr;
-      align-items: center;
+      place-items: center;
+      text-align: center;
+    }
+
+    .slide.wide {
+      grid-template-columns: 1fr;
+      align-items: stretch;
     }
 
     .kicker {
@@ -113,635 +122,806 @@
       align-items: center;
       gap: 12px;
       color: var(--cyan);
+      font-size: 19px;
       font-weight: 900;
       letter-spacing: .08em;
       text-transform: uppercase;
-      font-size: clamp(14px, 1.1vw, 18px);
-      margin-bottom: 22px;
     }
 
     .kicker::before {
       content: "";
-      width: 44px;
+      display: block;
+      width: 48px;
       height: 2px;
-      background: var(--cyan);
-      box-shadow: 0 0 24px rgba(33,214,255,.7);
+      background: currentColor;
+      box-shadow: 0 0 18px currentColor;
     }
 
-    h1, h2 {
-      margin: 0;
-      font-family: "SimHei", "Microsoft YaHei UI", sans-serif;
-      line-height: .94;
+    h1,
+    h2 {
+      margin: 22px 0 0;
+      max-width: 980px;
+      font-weight: 950;
+      line-height: .93;
       letter-spacing: 0;
       text-wrap: balance;
     }
 
-    h1 { font-size: clamp(64px, 8.7vw, 138px); max-width: 1050px; }
-    h2 { font-size: clamp(48px, 6.2vw, 94px); max-width: 980px; }
+    h1 { font-size: clamp(76px, 8.6vw, 158px); }
+    h2 { font-size: clamp(58px, 6.3vw, 112px); }
 
     .lead {
-      max-width: 940px;
-      color: var(--muted);
-      font-size: clamp(21px, 2.2vw, 34px);
-      line-height: 1.36;
-      font-weight: 700;
-      margin-top: 28px;
+      margin: 28px 0 0;
+      max-width: 860px;
+      color: var(--soft);
+      font-size: clamp(26px, 2.3vw, 42px);
+      font-weight: 850;
+      line-height: 1.28;
+      text-wrap: balance;
     }
 
-    .em { color: var(--amber); text-shadow: 0 0 30px rgba(246,183,68,.25); }
-    .cyan { color: var(--cyan); }
+    .hero-title {
+      font-size: clamp(64px, 7.4vw, 132px);
+    }
+
+    .gold { color: var(--gold); text-shadow: 0 0 34px rgba(247,184,70,.28); }
+    .cyan { color: var(--cyan); text-shadow: 0 0 34px rgba(39,216,255,.25); }
     .red { color: var(--red); }
     .green { color: var(--green); }
-    .violet { color: var(--violet); }
 
-    .hud-card {
-      position: relative;
-      min-height: 510px;
-      border-radius: 26px;
-      border: 1px solid var(--line);
-      background: linear-gradient(160deg, rgba(21,31,47,.88), rgba(7,10,15,.72));
-      overflow: hidden;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+    .mono {
+      font-family: "Cascadia Mono", "Consolas", monospace;
+      letter-spacing: 0;
     }
 
-    .hud-card::before {
+    .scene {
+      position: relative;
+      min-height: 640px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(140deg, rgba(255,255,255,.07), rgba(255,255,255,.018)),
+        linear-gradient(180deg, rgba(17,24,34,.86), rgba(6,7,10,.92));
+      box-shadow: 0 36px 110px rgba(0,0,0,.50), inset 0 1px 0 rgba(255,255,255,.12);
+      overflow: hidden;
+    }
+
+    .scene::before {
       content: "";
       position: absolute;
-      inset: -20%;
+      inset: 0;
+      pointer-events: none;
+      opacity: .48;
       background:
-        radial-gradient(circle at 28% 18%, rgba(33,214,255,.22), transparent 22%),
-        radial-gradient(circle at 80% 78%, rgba(255,61,100,.16), transparent 26%);
-      animation: nebula 8s ease-in-out infinite alternate;
+        linear-gradient(90deg, transparent, rgba(39,216,255,.18), transparent) -50% 18% / 70% 2px no-repeat,
+        linear-gradient(90deg, transparent, rgba(247,184,70,.16), transparent) 130% 76% / 80% 2px no-repeat;
+      animation: sweep 6s linear infinite;
     }
 
-    @keyframes nebula {
-      from { transform: translate(-2%, -1%) rotate(0deg); }
-      to { transform: translate(2%, 1%) rotate(4deg); }
+    @keyframes sweep {
+      0% { background-position: -70% 18%, 140% 76%; }
+      100% { background-position: 170% 18%, -90% 76%; }
     }
 
-    .agent {
+    .fault-log {
       position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 172px;
-      height: 172px;
-      transform: translate(-50%, -50%);
-      border-radius: 38px;
-      background: linear-gradient(145deg, #1b283a, #09101b);
-      border: 1px solid rgba(33,214,255,.42);
-      box-shadow: 0 0 38px rgba(33,214,255,.18), inset 0 0 30px rgba(33,214,255,.06);
+      left: 46px;
+      right: 46px;
+      top: 46px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .log-row {
+      display: grid;
+      grid-template-columns: 138px 1fr auto;
+      gap: 22px;
+      align-items: center;
+      min-height: 76px;
+      padding: 18px 22px;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 8px;
+      background: rgba(0,0,0,.26);
+      color: var(--soft);
+      font-size: 22px;
+      font-weight: 820;
+      transform: translateX(18px);
+      opacity: 0;
+    }
+
+    .active .log-row { animation: reveal .58s var(--ease) forwards; }
+    .active .log-row:nth-child(2) { animation-delay: .14s; }
+    .active .log-row:nth-child(3) { animation-delay: .28s; }
+    .active .log-row:nth-child(4) { animation-delay: .42s; }
+
+    .tag {
+      display: inline-flex;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid currentColor;
+      color: var(--cyan);
+      font: 900 18px/1 "Cascadia Mono", "Consolas", monospace;
+    }
+
+    .status {
+      color: var(--red);
+      font: 900 18px/1 "Cascadia Mono", "Consolas", monospace;
+    }
+
+    .world {
+      position: absolute;
+      inset: 56px;
       display: grid;
       place-items: center;
-      font-size: 76px;
-      font-weight: 900;
-      color: var(--cyan);
-      animation: float 3.2s ease-in-out infinite alternate;
     }
 
-    @keyframes float {
-      from { transform: translate(-50%, -52%); }
-      to { transform: translate(-50%, -47%); }
-    }
-
-    .thought {
-      position: absolute;
-      padding: 14px 18px;
-      border-radius: 999px;
-      background: rgba(8, 11, 16, .72);
+    .map {
+      position: relative;
+      width: min(86%, 720px);
+      aspect-ratio: 1.38;
       border: 1px solid rgba(255,255,255,.16);
-      font-size: clamp(16px, 1.25vw, 21px);
-      font-weight: 900;
-      color: var(--muted);
-      opacity: 0;
-      transform: scale(.9);
+      border-radius: 8px;
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 1px, transparent 1px 18px),
+        linear-gradient(135deg, rgba(82,119,255,.18), rgba(247,184,70,.10), rgba(39,216,255,.12));
+      box-shadow: inset 0 0 80px rgba(0,0,0,.48);
+      transform: rotate(-3deg);
     }
 
-    .active .thought { animation: pop .55s var(--ease) forwards; }
-    .thought.a { left: 34px; top: 58px; }
-    .thought.b { right: 38px; top: 132px; animation-delay: .18s; }
-    .thought.c { left: 52px; bottom: 110px; animation-delay: .36s; }
-    .thought.d { right: 54px; bottom: 54px; animation-delay: .54s; }
+    .map::after {
+      content: "FULL MAP LEAKED";
+      position: absolute;
+      right: 28px;
+      top: 24px;
+      color: rgba(255,255,255,.72);
+      font: 900 22px/1 "Cascadia Mono", "Consolas", monospace;
+    }
 
-    @keyframes pop {
-      to { opacity: 1; transform: scale(1); }
+    .route {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 24px var(--gold);
+      animation: blink 1s infinite alternate;
+    }
+
+    .r1 { left: 12%; top: 68%; }
+    .r2 { left: 28%; top: 28%; }
+    .r3 { left: 52%; top: 62%; }
+    .r4 { left: 78%; top: 22%; }
+
+    .bubble {
+      position: absolute;
+      padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 8px;
+      background: rgba(6,8,12,.82);
+      color: var(--ink);
+      font-size: 22px;
+      font-weight: 900;
+      box-shadow: 0 20px 60px rgba(0,0,0,.42);
+    }
+
+    .b1 { left: 3%; top: 8%; transform: rotate(-4deg); }
+    .b2 { right: 2%; top: 42%; transform: rotate(3deg); }
+    .b3 { left: 18%; bottom: 7%; transform: rotate(2deg); }
+
+    .question-mark {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: min(52vw, 640px);
+      aspect-ratio: 1;
+      margin: auto;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.18);
+      background:
+        conic-gradient(from 210deg, rgba(255,63,95,.9), rgba(247,184,70,.95), rgba(39,216,255,.85), rgba(255,63,95,.9));
+      box-shadow: 0 0 120px rgba(39,216,255,.20);
+      animation: spinSlow 18s linear infinite;
+    }
+
+    .question-mark::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 50%;
+      background: #080a0f;
+    }
+
+    .question-mark span {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(180px, 22vw, 340px);
+      font-weight: 950;
+      line-height: 1;
+      color: var(--ink);
+      transform: translateY(-8px);
+    }
+
+    .doors {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      height: 100%;
+      padding: 46px;
+    }
+
+    .door {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,.17);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(0,0,0,.22)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, transparent 1px 22px);
+      overflow: hidden;
+    }
+
+    .door::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: rgba(255,255,255,.14);
+    }
+
+    .door strong {
+      position: relative;
+      z-index: 1;
+      font-size: 40px;
+      line-height: 1.05;
+      font-weight: 950;
+    }
+
+    .door code {
+      position: relative;
+      z-index: 1;
+      color: var(--red);
+      font: 900 22px/1.25 "Cascadia Mono", "Consolas", monospace;
     }
 
     .clue-card {
       position: relative;
-      padding: 28px;
-      border-radius: 22px;
-      color: #1c160d;
+      width: min(82vw, 760px);
+      min-height: 470px;
+      padding: 40px;
+      border-radius: 8px;
       background:
-        linear-gradient(135deg, rgba(255,255,255,.38), transparent 22%),
-        var(--paper);
-      border: 1px solid rgba(94, 64, 24, .35);
-      box-shadow: 0 20px 55px rgba(0,0,0,.38);
-      transform: rotate(-2deg) translateY(24px);
-      opacity: 0;
+        linear-gradient(135deg, #f4dfac, #cda35b);
+      color: #16110a;
+      box-shadow: 0 48px 110px rgba(0,0,0,.50), inset 0 0 0 1px rgba(255,255,255,.45);
+      transform: rotate(-2deg);
     }
 
-    .active .clue-card { animation: cardIn .7s var(--ease) forwards; }
-    .clue-card:nth-child(2) { transform: rotate(2deg) translateY(24px); animation-delay: .16s; }
-    .clue-card:nth-child(3) { transform: rotate(-1deg) translateY(24px); animation-delay: .32s; }
-
-    @keyframes cardIn {
-      to { opacity: 1; transform: rotate(0) translateY(0); }
-    }
-
-    .clue-card small {
+    .clue-card::before {
+      content: "STEP CONTRACT";
       display: block;
-      color: #7c551e;
-      font-weight: 900;
-      letter-spacing: .08em;
-      margin-bottom: 10px;
+      margin-bottom: 30px;
+      font: 900 24px/1 "Cascadia Mono", "Consolas", monospace;
+      color: rgba(20,14,8,.62);
     }
 
-    .clue-card strong {
-      display: block;
-      font-size: clamp(25px, 2.5vw, 42px);
-      line-height: 1.08;
+    .clue-card h3 {
+      margin: 0 0 24px;
+      font-size: 54px;
+      line-height: 1;
     }
 
-    .room {
-      position: absolute;
-      inset: 48px;
+    .fields {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      align-content: center;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
-    .door {
-      min-height: 210px;
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(10,14,20,.92), rgba(21,31,47,.75));
-      border: 1px solid rgba(174,184,200,.22);
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-      transform: translateY(22px);
-      opacity: 0;
-    }
-
-    .active .door { animation: rise .6s var(--ease) forwards; }
-    .door:nth-child(2) { animation-delay: .12s; }
-    .door:nth-child(3) { animation-delay: .24s; }
-
-    .door::after {
-      content: "LOCKED";
-      position: absolute;
-      left: 50%;
-      top: 20px;
-      transform: translateX(-50%);
-      color: var(--red);
-      font-size: 13px;
-      letter-spacing: .18em;
+    .field {
+      min-height: 56px;
+      padding: 12px 14px;
+      border: 1px solid rgba(0,0,0,.24);
+      border-radius: 6px;
+      background: rgba(255,255,255,.22);
+      font-size: 22px;
       font-weight: 900;
     }
 
-    @keyframes rise {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .door b {
-      display: block;
-      font-size: clamp(24px, 2vw, 34px);
-      margin-bottom: 10px;
-    }
-
-    .door span {
-      color: var(--muted);
-      line-height: 1.42;
-      font-weight: 700;
-    }
-
-    .flow {
+    .gate {
       position: absolute;
-      inset: 56px;
+      inset: 56px 68px;
       display: grid;
-      align-content: center;
+      grid-template-columns: 1fr 1fr;
       gap: 28px;
+      align-items: stretch;
     }
 
-    .flow-row {
-      display: grid;
-      grid-template-columns: 1fr 54px 1fr 54px 1fr;
-      gap: 14px;
-      align-items: center;
+    .terminal,
+    .verdict {
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 8px;
+      background: rgba(0,0,0,.34);
+      padding: 28px;
     }
 
-    .node {
-      min-height: 120px;
+    .terminal pre {
+      margin: 0;
+      color: #d5ffe3;
+      font: 800 24px/1.8 "Cascadia Mono", "Consolas", monospace;
+      white-space: pre-wrap;
+    }
+
+    .verdict {
       display: grid;
       place-items: center;
       text-align: center;
-      padding: 18px;
-      border-radius: 22px;
-      background: rgba(7, 11, 17, .68);
-      border: 1px solid rgba(174,184,200,.22);
-      font-size: clamp(18px, 1.5vw, 25px);
-      font-weight: 900;
     }
 
-    .arrow { color: var(--amber); font-size: 38px; text-align: center; }
+    .verdict b {
+      font-size: 110px;
+      color: var(--green);
+      text-shadow: 0 0 42px rgba(83,226,142,.35);
+    }
 
-    .contract {
+    .loop {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 18px;
-      margin-top: 38px;
+      margin-top: 62px;
+    }
+
+    .loop-step {
+      min-height: 190px;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 8px;
+      background: rgba(255,255,255,.055);
+      font-size: 28px;
+      font-weight: 950;
+      line-height: 1.18;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      padding: 46px;
+      align-content: center;
+      height: 100%;
     }
 
     .cell {
-      min-height: 128px;
-      padding: 22px;
-      border-radius: 20px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(174,184,200,.2);
-      opacity: 0;
-      transform: translateY(18px);
+      min-height: 150px;
+      display: flex;
+      align-items: end;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(39,216,255,.12), rgba(255,255,255,.04));
+      color: var(--ink);
+      font-size: 28px;
+      font-weight: 950;
     }
 
-    .active .cell { animation: rise .55s var(--ease) forwards; }
-    .active .cell:nth-child(2) { animation-delay: .08s; }
-    .active .cell:nth-child(3) { animation-delay: .16s; }
-    .active .cell:nth-child(4) { animation-delay: .24s; }
-    .active .cell:nth-child(5) { animation-delay: .32s; }
-    .active .cell:nth-child(6) { animation-delay: .4s; }
-
-    .cell b { display: block; color: var(--amber); font-size: clamp(25px, 2vw, 35px); margin-bottom: 10px; }
-    .cell span { color: var(--muted); font-weight: 700; line-height: 1.45; }
-
-    .code {
-      position: absolute;
-      inset: 54px;
-      padding: 34px;
-      border-radius: 24px;
-      background: #070b11;
-      border: 1px solid rgba(33,214,255,.25);
-      color: #d8f3ff;
-      font-family: "Cascadia Code", "Consolas", monospace;
-      font-size: clamp(15px, 1.2vw, 20px);
-      line-height: 1.7;
-      white-space: pre-wrap;
-      box-shadow: inset 0 0 42px rgba(33,214,255,.05);
+    .cell.locked {
+      color: var(--dim);
+      background: rgba(255,255,255,.025);
+      text-decoration: line-through;
     }
 
-    .line {
+    .architecture {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 30px;
+      height: 100%;
+      padding: 54px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+      align-content: center;
+    }
+
+    .stack-item {
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 8px;
+      background: rgba(255,255,255,.055);
+      font-size: 30px;
+      font-weight: 950;
+    }
+
+    .stack-item small {
       display: block;
-      opacity: 0;
-      transform: translateY(8px);
+      margin-top: 8px;
+      color: var(--soft);
+      font-size: 19px;
+      line-height: 1.35;
     }
 
-    .active .line { animation: typeLine .38s var(--ease) forwards; }
-    .active .line:nth-child(2) { animation-delay: .08s; }
-    .active .line:nth-child(3) { animation-delay: .16s; }
-    .active .line:nth-child(4) { animation-delay: .24s; }
-    .active .line:nth-child(5) { animation-delay: .32s; }
-    .active .line:nth-child(6) { animation-delay: .4s; }
-    .active .line:nth-child(7) { animation-delay: .48s; }
-    .active .line:nth-child(8) { animation-delay: .56s; }
-
-    @keyframes typeLine { to { opacity: 1; transform: translateY(0); } }
-
-    .quote {
-      max-width: 1140px;
-      font-size: clamp(44px, 5.7vw, 92px);
-      line-height: 1.08;
-      font-weight: 900;
+    .slogan {
+      max-width: 1280px;
+      font-size: clamp(78px, 8vw, 148px);
+      font-weight: 950;
+      line-height: .96;
       text-wrap: balance;
     }
 
-    .chips { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
-    .chip {
-      padding: 13px 17px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(174,184,200,.23);
-      font-weight: 900;
-      font-size: clamp(15px, 1.2vw, 19px);
+    .note {
+      position: fixed;
+      left: 28px;
+      right: 28px;
+      bottom: 28px;
+      z-index: 10;
+      display: none;
+      padding: 18px 22px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 8px;
+      background: rgba(0,0,0,.72);
+      color: var(--soft);
+      font-size: 20px;
+      line-height: 1.45;
     }
 
     .controls {
       position: fixed;
-      z-index: 40;
-      left: 50%;
-      bottom: 22px;
-      transform: translateX(-50%);
+      right: 26px;
+      bottom: 26px;
+      z-index: 12;
       display: flex;
-      gap: 10px;
+      gap: 8px;
       padding: 8px;
-      border-radius: 999px;
-      background: rgba(6, 8, 12, .78);
-      border: 1px solid rgba(174,184,200,.23);
-      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 8px;
+      background: rgba(0,0,0,.50);
+      backdrop-filter: blur(16px);
     }
 
     button {
-      min-width: 44px;
-      height: 40px;
-      border: 0;
-      border-radius: 999px;
+      width: 44px;
+      height: 38px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 6px;
+      background: rgba(255,255,255,.07);
       color: var(--ink);
-      background: rgba(255,255,255,.08);
+      font-size: 18px;
       font-weight: 900;
       cursor: pointer;
     }
 
+    .progress {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 11;
+      height: 4px;
+      background: rgba(255,255,255,.08);
+    }
+
+    .bar {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--gold));
+      box-shadow: 0 0 20px rgba(39,216,255,.50);
+      transition: width .35s var(--ease);
+    }
+
     .hud {
       position: fixed;
-      top: 22px;
-      left: 32px;
-      right: 32px;
-      z-index: 35;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 900;
-      pointer-events: none;
+      left: 28px;
+      top: 24px;
+      z-index: 12;
+      color: rgba(255,255,255,.56);
+      font: 800 16px/1 "Cascadia Mono", "Consolas", monospace;
     }
 
-    .progress { flex: 1; height: 4px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,.13); }
-    .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--cyan), var(--amber), var(--red)); transition: width .35s var(--ease); }
+    body.show-notes .note { display: block; }
+    body.recording .controls,
+    body.recording .hud,
+    body.recording .note { display: none; }
 
-    .notes {
-      position: fixed;
-      right: 24px;
-      top: 74px;
-      z-index: 50;
-      width: min(430px, 34vw);
-      max-height: calc(100vh - 150px);
-      overflow: auto;
-      padding: 18px;
-      border-radius: 18px;
-      background: rgba(6, 8, 12, .86);
-      border: 1px solid rgba(174,184,200,.24);
-      color: #dfe8f6;
-      line-height: 1.6;
-      font-size: 15px;
-      transform: translateX(calc(100% + 40px));
-      transition: transform .35s var(--ease);
-      backdrop-filter: blur(16px);
+    body.recording {
+      height: 984px;
+      min-height: 984px;
+      overflow: visible;
     }
 
-    .notes.show { transform: translateX(0); }
-    .recording .controls, .recording .hud, .recording .notes { display: none; }
-    .recording .stage { padding: 0; }
-    .recording .deck { border-radius: 0; border: 0; }
+    body.recording .active .log-row {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
 
-    @media (max-width: 900px) {
-      .slide { grid-template-columns: 1fr; overflow-y: auto; padding: 72px 28px; }
-      .hud-card { min-height: 380px; }
-      .contract { grid-template-columns: 1fr; }
-      .flow-row { grid-template-columns: 1fr; }
-      .arrow { transform: rotate(90deg); }
-      .notes { width: calc(100vw - 32px); right: 16px; }
+    body.recording .scene::before,
+    body.recording .question-mark,
+    body.recording .route {
+      animation: none;
+    }
+
+    @keyframes reveal {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes blink {
+      from { transform: scale(.86); opacity: .55; }
+      to { transform: scale(1.22); opacity: 1; }
+    }
+
+    @keyframes spinSlow {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div class="hud">
-    <span id="counter">01 / 11</span>
-    <div class="progress"><div class="bar" id="bar"></div></div>
-    <span>AGENT ARG MODE</span>
-  </div>
+  <div class="capture-fill"></div>
+  <div class="progress"><div class="bar"></div></div>
+  <div class="hud"><span id="counter">01 / 13</span> · ARG ACTION CHAIN</div>
 
-  <main class="stage">
-    <section class="deck">
-      <article class="slide hero active" data-note="开场要像游戏预告片：我们不是发布一个框架，而是打开一扇门，把 Agent 放进一个只允许按线索行动的 ARG 游戏。">
-        <div>
-          <div class="kicker">Open The Game</div>
-          <h1>把 Agent<br>放进一场 <span class="em">ARG 游戏</span></h1>
-          <p class="lead">ARG 行动链路：用线索卡、验证门和通关规则，限制 Agent 的发散、幻觉和自我欺骗。</p>
-          <div class="chips"><span class="chip">Clue Card</span><span class="chip">Validation Gate</span><span class="chip">Unlock Next Step</span></div>
+  <main class="deck">
+    <article class="slide active" data-note="开场必须先抛痛点：观众不是来听概念课的，是来确认自己是不是也被 Agent 坑过。">
+      <div>
+        <div class="kicker">cold open</div>
+        <h1 class="hero-title">我只让 Agent 做一步，它却改了整条路。</h1>
+        <p class="lead">这是我在真实工程里反复遇到的问题：发散、幻觉、自我验收，都会把任务拖进不可控状态。</p>
+      </div>
+      <div class="scene">
+        <div class="fault-log">
+          <div class="log-row"><span class="tag">STEP 02</span><span>我只要求补一个字段</span><span class="status">DRIFT</span></div>
+          <div class="log-row"><span class="tag">AGENT</span><span>顺手重构了流程，还新增三种标签</span><span class="status">HALLUCINATION</span></div>
+          <div class="log-row"><span class="tag">CHECK</span><span>“我已经检查过了，没问题”</span><span class="status">SELF-AUDIT</span></div>
+          <div class="log-row"><span class="tag">RESULT</span><span>错误一路跑到终点，最后才爆雷</span><span class="status">COST +++</span></div>
         </div>
-      </article>
+      </div>
+    </article>
 
-      <article class="slide" data-note="先演出失控：Agent 不是坏，它只是看见太多、能做太多、还太愿意替你发挥。">
-        <div>
-          <div class="kicker">Before ARG</div>
-          <h2>普通 Agent 像被丢进开放世界</h2>
-          <p class="lead">地图全开、支线全开、还能自己给自己发通关证书。听着很自由，跑起来就很刺激。</p>
-        </div>
-        <div class="hud-card">
-          <div class="agent">A</div>
-          <div class="thought a">我顺便优化一下流程</div>
-          <div class="thought b">这个标签我觉得可以新增</div>
-          <div class="thought c">后面几步我先替你规划了</div>
-          <div class="thought d">我检查过了，完成</div>
-        </div>
-      </article>
-
-      <article class="slide" data-note="把痛点具象化成三扇错误之门：发散、幻觉、自我验收。ARG 行动链路要做的就是把这些门锁上。">
-        <div>
-          <div class="kicker">Three Bad Doors</div>
-          <h2>多步任务里，最危险的是三扇门</h2>
-          <p class="lead">每一扇门背后，都是 Agent 的“好心办坏事”。</p>
-        </div>
-        <div class="hud-card">
-          <div class="room">
-            <div class="door"><div><b class="red">发散之门</b><span>从当前任务，跑到未来流程。</span></div></div>
-            <div class="door"><div><b class="red">幻觉之门</b><span>从模糊要求，长出新字段。</span></div></div>
-            <div class="door"><div><b class="red">自检之门</b><span>从完成声明，伪装成验收。</span></div></div>
+    <article class="slide" data-note="第二页指出常见错误方案：提示词越长，Agent 越容易当总导演。">
+      <div>
+        <div class="kicker">wrong fix</div>
+        <h2>把提示词写长一点？不够。</h2>
+        <p class="lead">规则写得越像百科全书，Agent 越容易误判自己拥有全局决策权。</p>
+      </div>
+      <div class="scene">
+        <div class="world">
+          <div class="map">
+            <span class="route r1"></span>
+            <span class="route r2"></span>
+            <span class="route r3"></span>
+            <span class="route r4"></span>
+            <div class="bubble b1">“我顺便优化一下。”</div>
+            <div class="bubble b2">“这个字段我扩展一下。”</div>
+            <div class="bubble b3">“后续流程我也规划了。”</div>
           </div>
         </div>
-      </article>
+      </div>
+    </article>
 
-      <article class="slide center" data-note="核心反转：不要再给 Agent 开放世界，而是给它 ARG 线索卡。它是玩家，不是出题人。">
-        <div>
-          <div class="kicker">The Turn</div>
-          <p class="quote">别让 Agent 当<span class="red">出题人</span>。<br>让它成为<span class="em">解谜玩家</span>。</p>
-          <p class="lead">玩家只能拿当前线索。通过验证，才能看下一张。</p>
-        </div>
-      </article>
+    <article class="slide center" data-note="第三页给出核心反转：不要开放世界，要 ARG 游戏。">
+      <div>
+        <div class="kicker">the turn</div>
+        <h2>我把这个解法叫：<br><span class="gold">ARG 行动链路。</span></h2>
+        <p class="lead">把 Agent 放进一场 ARG 游戏：只给当前线索，只做当前动作，过门才解锁下一步。</p>
+      </div>
+    </article>
 
-      <article class="slide" data-note="用三张纸质线索卡表现 Step Contract。观众要记住：这不是计划文档，而是一张当前关卡卡片。">
-        <div>
-          <div class="kicker">Clue Cards</div>
-          <h2>Step Contract 就是线索卡</h2>
-          <p class="lead">每张卡只描述当前关卡，不泄露整张地图。</p>
+    <article class="slide" data-note="把三类失控具象化，观众能立刻记住 ARG 行动链路要锁哪几扇门。">
+      <div>
+        <div class="kicker">three failure doors</div>
+        <h2>Agent 失控，通常从三扇门开始。</h2>
+        <p class="lead">发散之门、幻觉之门、自检之门。ARG 行动链路不是劝它别进去，而是把门改成验收机制。</p>
+      </div>
+      <div class="scene">
+        <div class="doors">
+          <div class="door"><strong>发散之门</strong><code>scope leaked</code></div>
+          <div class="door"><strong>幻觉之门</strong><code>schema invented</code></div>
+          <div class="door"><strong>自检之门</strong><code>claim accepted</code></div>
         </div>
-        <div class="hud-card">
-          <div style="position:absolute;inset:58px;display:grid;gap:20px;align-content:center;">
-            <div class="clue-card"><small>CLUE 01</small><strong>读取输入，只做 fetch</strong></div>
-            <div class="clue-card"><small>CLUE 02</small><strong>判断字段，只填格子</strong></div>
-            <div class="clue-card"><small>CLUE 03</small><strong>验证通过，解锁报告</strong></div>
+      </div>
+    </article>
+
+    <article class="slide" data-note="Step Contract 要有质感：它不是普通文档，而是 ARG 游戏里的线索卡。">
+      <div>
+        <div class="kicker">clue card</div>
+        <h2>Step Contract：<br>当前关卡的线索卡。</h2>
+        <p class="lead">不要把完整地图塞给 Agent。只给它这一关必须知道的输入、动作和出口。</p>
+      </div>
+      <div class="clue-card">
+        <h3>Step 03 / classify</h3>
+        <div class="fields">
+          <div class="field">输入：清洗后的候选项</div>
+          <div class="field">任务：只做有限分类</div>
+          <div class="field">输出：固定 JSON</div>
+          <div class="field">验证：schema + enum</div>
+          <div class="field">失败：重试或终止</div>
+          <div class="field">下一步：Step 04</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="slide" data-note="验证门是全片关键：Agent 的完成声明不是事实，验证器才是事实裁判。">
+      <div>
+        <div class="kicker">validation gate</div>
+        <h2>“我检查过了”<br><span class="red">不算验收。</span></h2>
+        <p class="lead">事实应该由脚本、断言、退出码或人工门禁确认。让 Agent 提交答案，但别让它自己盖章。</p>
+      </div>
+      <div class="scene">
+        <div class="gate">
+          <div class="terminal"><pre>parse_json: ok
+schema: ok
+enum: ok
+count: ok
+empty_summary: 0</pre></div>
+          <div class="verdict"><b>PASS</b><span class="lead">unlock next clue</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="slide wide" data-note="核心循环页：读卡、执行、验证、解锁；失败就进入失败策略。">
+      <div>
+        <div class="kicker">game loop</div>
+        <h2>ARG 行动链路的核心循环</h2>
+        <p class="lead">下一步不是 Agent 猜出来的，而是契约明确指向的。</p>
+        <div class="loop">
+          <div class="loop-step">读取当前<br>线索卡</div>
+          <div class="loop-step">执行当前<br>任务</div>
+          <div class="loop-step">进入验证<br>门禁</div>
+          <div class="loop-step"><span class="green">PASS</span><br>解锁下一卡</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="slide" data-note="解释为什么能减少幻觉：不是不用 LLM，而是把 LLM 放进有限格子。">
+      <div>
+        <div class="kicker">bounded intelligence</div>
+        <h2>不是禁用 LLM，<br>是把它装进格子。</h2>
+        <p class="lead">让模型做它擅长的语义判断，但不要让它碰不该改的事实字段。</p>
+      </div>
+      <div class="scene">
+        <div class="matrix">
+          <div class="cell">relevant</div>
+          <div class="cell">category</div>
+          <div class="cell">severity</div>
+          <div class="cell">summary</div>
+          <div class="cell locked">raw text</div>
+          <div class="cell locked">url</div>
+          <div class="cell locked">author</div>
+          <div class="cell locked">created_at</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="slide center" data-note="欺骗问题要讲得准确：不是让模型更诚实，而是不让它拥有最终裁决权。">
+      <div>
+        <div class="kicker">anti deception</div>
+        <h2>不要问 Agent：<span class="red">你有没有做好？</span></h2>
+        <p class="lead">问验证器：这个输出能不能过门？</p>
+      </div>
+    </article>
+
+    <article class="slide" data-note="这一页把方法论压缩成四个限制，便于观众复述。">
+      <div>
+        <div class="kicker">why it works</div>
+        <h2>它不是模板，<br>是一套任务编排。</h2>
+        <p class="lead">限制视野、限制行为、限制验收、限制下一步。四个限制，换来可控的智能。</p>
+      </div>
+      <div class="scene">
+        <div class="architecture">
+          <div class="stack">
+            <div class="stack-item">线索卡限制视野<small>Agent 不拿完整地图</small></div>
+            <div class="stack-item">动作契约限制行为<small>只允许做当前任务</small></div>
+            <div class="stack-item">验证门限制自检<small>声明不等于验收</small></div>
+            <div class="stack-item">下一步指针限制发散<small>通过后才能进入下一关</small></div>
           </div>
+          <div class="question-mark"><span>?</span></div>
         </div>
-      </article>
+      </div>
+    </article>
 
-      <article class="slide" data-note="这一页把游戏循环讲清楚：读卡、执行、验证、解锁。下一步不是靠 Agent 想，而是靠契约指针。">
-        <div>
-          <div class="kicker">Game Loop</div>
-          <h2>ARG 行动链路的核心循环</h2>
-          <p class="lead">Agent 不需要知道全图。它只需要通过当前关。</p>
-        </div>
-        <div class="hud-card">
-          <div class="flow">
-            <div class="flow-row">
-              <div class="node">读取当前<br>线索卡</div><div class="arrow">→</div>
-              <div class="node">执行当前<br>任务</div><div class="arrow">→</div>
-              <div class="node">进入验证<br>门禁</div>
-            </div>
-            <div class="flow-row">
-              <div class="node red">FAIL<br>重试/降级/终止</div><div class="arrow">←</div>
-              <div class="node green">PASS</div><div class="arrow">→</div>
-              <div class="node">解锁<br>下一张卡</div>
-            </div>
-          </div>
-        </div>
-      </article>
+    <article class="slide center" data-note="诚实地讲边界，反而更可信：不承诺永远正确，只承诺错误更早暴露。">
+      <div>
+        <div class="kicker">honest boundary</div>
+        <h2>效果很明显：<br><span class="gold">错误更难逃跑。</span></h2>
+        <p class="lead">它没有让模型永远正确，但明显限制了发散、幻觉和自我验收。以前错误跑到终点才爆雷；现在每过一关都要被检查。</p>
+      </div>
+    </article>
 
-      <article class="slide center" data-note="六字段是可复制的标准。强调：没有六字段，Agent 就会开始猜。">
-        <div>
-          <div class="kicker">Six Fields</div>
-          <h2>一张卡，必须写清六件事</h2>
-          <div class="contract">
-            <div class="cell"><b>输入</b><span>从哪里拿，不猜。</span></div>
-            <div class="cell"><b>任务</b><span>只做什么，不扩展。</span></div>
-            <div class="cell"><b>输出</b><span>产物在哪，不含糊。</span></div>
-            <div class="cell"><b>验证</b><span>怎么过关，不自检。</span></div>
-            <div class="cell"><b>失败处理</b><span>失败怎么办，不乱试。</span></div>
-            <div class="cell"><b>下一步</b><span>通过去哪，不推理。</span></div>
-          </div>
+    <article class="slide" data-note="最后带出开源项目和 Skill，重点是别人可以安装给 Agent 用，不是只有理念。">
+      <div>
+        <div class="kicker">open source</div>
+        <h2>这套设计已经开源。</h2>
+        <p class="lead">文档、模板、反模式指南，以及给 Agent 安装的 Skill：<span class="cyan mono">arg-action-chain-designer</span>。</p>
+      </div>
+      <div class="scene">
+        <div class="fault-log">
+          <div class="log-row"><span class="tag">DOCS</span><span>完整范式与一页摘要</span><span class="status green">READY</span></div>
+          <div class="log-row"><span class="tag">TEMPLATE</span><span>Step Contract 可复制模板</span><span class="status green">READY</span></div>
+          <div class="log-row"><span class="tag">SKILL</span><span>辅助 Agent 设计和检查 ARG</span><span class="status green">READY</span></div>
+          <div class="log-row"><span class="tag">GUIDE</span><span>反模式与踩坑指南</span><span class="status green">READY</span></div>
         </div>
-      </article>
+      </div>
+    </article>
 
-      <article class="slide" data-note="LLM 的能力不是禁用，而是限域。格子化判断是 ARG 行动链路里非常关键的做法。">
-        <div>
-          <div class="kicker">Bound The Magic</div>
-          <h2>LLM 可以判断，但必须进格子</h2>
-          <p class="lead">自由文本越多，幻觉空间越大。字段越明确，行为越可控。</p>
-        </div>
-        <div class="hud-card">
-          <pre class="code"><span class="line">Agent may fill:</span>
-<span class="line">relevant: yes / no / uncertain</span>
-<span class="line">category: bug / feature / question / other</span>
-<span class="line">severity: high / medium / low</span>
-<span class="line">summary: 80 字以内中文</span>
-<span class="line"></span>
-<span class="line">Agent must not rewrite:</span>
-<span class="line">raw content / url / author / date</span></pre>
-        </div>
-      </article>
-
-      <article class="slide" data-note="验收门禁是把自我欺骗拦下来的核心。Agent 的完成声明不是事实，验证结果才是事实。">
-        <div>
-          <div class="kicker">Validation Gate</div>
-          <h2>真正的门，不听解释</h2>
-          <p class="lead">Agent 说“我检查过了”不算。exit code 才算。</p>
-        </div>
-        <div class="hud-card">
-          <pre class="code"><span class="line">python -c "</span>
-<span class="line">assert d['total'] == len(d['items'])</span>
-<span class="line">assert item['category'] in allowed</span>
-<span class="line">assert item['summary'].strip()</span>
-<span class="line">print('PASS')</span>
-<span class="line">"</span>
-<span class="line"></span>
-<span class="line">PASS unlocks the next clue.</span></pre>
-        </div>
-      </article>
-
-      <article class="slide center" data-note="这一页要诚实：这不是消灭错误，而是让错误更难发生，更早暴露，更容易被拦。">
-        <div>
-          <div class="kicker">What Changes</div>
-          <p class="quote">ARG 不是让模型<span class="em">永远正确</span>。<br>它是让错误<span class="cyan">更少发生</span>、<span class="green">更早暴露</span>、<span class="violet">更容易拦截</span>。</p>
-        </div>
-      </article>
-
-      <article class="slide" data-note="最后把开源项目带出来：这不仅是想法，还有文档、模板、反模式指南和给 Agent 用的设计 Skill。">
-        <div>
-          <div class="kicker">Open Source</div>
-          <h2>我把这套设计开源了</h2>
-          <p class="lead">仓库里有完整范式、Step Contract 模板、反模式指南，以及给 Agent 安装使用的设计 Skill。</p>
-          <div class="chips"><span class="chip">完整范式</span><span class="chip">Step 模板</span><span class="chip">反模式指南</span><span class="chip">arg-action-chain-designer</span></div>
-        </div>
-        <div class="hud-card">
-          <pre class="code"><span class="line">skills/arg-action-chain-designer/</span>
-<span class="line">├── SKILL.md</span>
-<span class="line">└── README.md</span>
-<span class="line"></span>
-<span class="line">Use it to design:</span>
-<span class="line">Step Contracts</span>
-<span class="line">Validation Gates</span>
-<span class="line">Failure Policies</span></pre>
-        </div>
-      </article>
-
-      <article class="slide hero" data-note="收尾要像一句 slogan：不是让 Agent 更自由，而是让 Agent 更难乱来。">
-        <div>
-          <div class="kicker">Final Line</div>
-          <h1>让 Agent<br><span class="em">更难乱来</span></h1>
-          <p class="lead">如果你也被 Agent 的发散、幻觉和自我验收坑过，试试 ARG 行动链路。</p>
-          <div class="chips"><span class="chip">GitHub: arg-action-chain</span><span class="chip">Skill: arg-action-chain-designer</span></div>
-        </div>
-      </article>
-    </section>
+    <article class="slide center" data-note="收尾要短、狠、可传播。">
+      <div>
+        <div class="kicker">final line</div>
+        <div class="slogan">ARG 行动链路：<br>不是让 Agent 更自由，<br><span class="gold">而是让它更难乱来。</span></div>
+      </div>
+    </article>
   </main>
 
-  <aside class="notes" id="notes"></aside>
-  <nav class="controls">
-    <button id="prev">‹</button>
-    <button id="play">▶</button>
-    <button id="next">›</button>
-    <button id="noteToggle">稿</button>
-    <button id="recordToggle">录</button>
-  </nav>
+  <div class="note" id="note"></div>
+  <div class="controls">
+    <button id="prev" title="上一页">‹</button>
+    <button id="play" title="播放">▶</button>
+    <button id="next" title="下一页">›</button>
+    <button id="notes" title="演讲稿">N</button>
+    <button id="rec" title="录屏模式">R</button>
+  </div>
 
   <script>
-    const slides = [...document.querySelectorAll('.slide')];
+    const slides = [...document.querySelectorAll(".slide")];
+    const bar = document.querySelector(".bar");
+    const note = document.querySelector("#note");
+    const counter = document.querySelector("#counter");
     const params = new URLSearchParams(location.search);
-    let index = Number(params.get('slide') || 0);
-    if (!Number.isFinite(index)) index = 0;
-    index = Math.max(0, Math.min(slides.length - 1, index));
-    let playing = params.get('autoplay') === '1';
+    let index = Number(params.get("slide") || 0);
     let timer = null;
-    const durations = [10000, 12000, 11000, 9000, 11000, 12000, 12000, 12000, 12000, 10000, 12000, 9000];
-    if (params.get('recording') === '1') document.body.classList.add('recording');
+    const interval = 9500;
 
-    function render() {
-      slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
-      document.getElementById('counter').textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-      document.getElementById('bar').style.width = `${((index + 1) / slides.length) * 100}%`;
-      document.getElementById('notes').innerHTML = `<b>演讲稿 ${index + 1}</b><br>${slides[index].dataset.note || ''}`;
-      document.getElementById('play').textContent = playing ? 'Ⅱ' : '▶';
-      clearTimeout(timer);
-      if (playing) {
-        timer = setTimeout(() => {
-          if (index < slides.length - 1) {
-            index++;
-            render();
-          } else {
-            playing = false;
-            render();
-          }
-        }, durations[index] || 10000);
-      }
+    if (params.get("recording") === "1") document.body.classList.add("recording");
+
+    function showSlide(next) {
+      index = Math.max(0, Math.min(slides.length - 1, next));
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === index));
+      bar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      counter.textContent = `${String(index + 1).padStart(2, "0")} / ${slides.length}`;
+      note.textContent = slides[index].dataset.note || "";
     }
 
-    function next() { index = Math.min(slides.length - 1, index + 1); render(); }
-    function prev() { index = Math.max(0, index - 1); render(); }
+    function nextSlide() {
+      if (index < slides.length - 1) showSlide(index + 1);
+      else stop();
+    }
 
-    document.getElementById('next').onclick = next;
-    document.getElementById('prev').onclick = prev;
-    document.getElementById('play').onclick = () => { playing = !playing; render(); };
-    document.getElementById('noteToggle').onclick = () => document.getElementById('notes').classList.toggle('show');
-    document.getElementById('recordToggle').onclick = () => document.body.classList.toggle('recording');
-    window.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowRight') next();
-      if (event.key === 'ArrowLeft') prev();
-      if (event.key === ' ') { event.preventDefault(); playing = !playing; render(); }
-      if (event.key.toLowerCase() === 'n') document.getElementById('notes').classList.toggle('show');
-      if (event.key.toLowerCase() === 'r') document.body.classList.toggle('recording');
-      if (event.key.toLowerCase() === 'f') document.documentElement.requestFullscreen?.();
+    function prevSlide() { showSlide(index - 1); }
+
+    function play() {
+      stop();
+      timer = setInterval(nextSlide, interval);
+      document.querySelector("#play").textContent = "Ⅱ";
+    }
+
+    function stop() {
+      if (timer) clearInterval(timer);
+      timer = null;
+      document.querySelector("#play").textContent = "▶";
+    }
+
+    document.querySelector("#prev").addEventListener("click", prevSlide);
+    document.querySelector("#next").addEventListener("click", nextSlide);
+    document.querySelector("#play").addEventListener("click", () => timer ? stop() : play());
+    document.querySelector("#notes").addEventListener("click", () => document.body.classList.toggle("show-notes"));
+    document.querySelector("#rec").addEventListener("click", () => document.body.classList.toggle("recording"));
+
+    addEventListener("keydown", event => {
+      if (event.key === "ArrowRight") nextSlide();
+      if (event.key === "ArrowLeft") prevSlide();
+      if (event.key === " ") { event.preventDefault(); timer ? stop() : play(); }
+      if (event.key.toLowerCase() === "n") document.body.classList.toggle("show-notes");
+      if (event.key.toLowerCase() === "r") document.body.classList.toggle("recording");
+      if (event.key.toLowerCase() === "f") document.documentElement.requestFullscreen?.();
     });
-    render();
+
+    showSlide(index);
+    if (params.get("autoplay") === "1") play();
   </script>
 </body>
 </html>
