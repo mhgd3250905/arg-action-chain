@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="./skills/arg-action-chain-designer">Agent Skill</a> ·
+  <a href="./video/arg-action-chain-html">动态演示</a> ·
   <a href="./starter-kit">Starter Kit</a> ·
   <a href="./docs/getting-started.md">三分钟上手</a> ·
   <a href="./Step-Contract-模板.md">Step Contract 模板</a> ·
@@ -104,6 +105,8 @@ Copy-Item -Recurse skills\arg-action-chain-designer "$env:USERPROFILE\.agents\sk
 ├── 示例-工单反馈-Step02.md        # 脱敏虚构示例
 ├── skills/
 │   └── arg-action-chain-designer/ # 给 Agent 安装使用的设计 Skill
+├── video/
+│   └── arg-action-chain-html/     # 知识分享动态 HTML 演示
 ├── docs/
 │   ├── getting-started.md        # 如何搭第一条链
 │   └── assets/cover.svg          # 项目封面
