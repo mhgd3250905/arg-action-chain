@@ -1,19 +1,25 @@
-# ARG 行动链路动态 HTML 演示
+# ARG 行动链路动态演示与成片脚本
 
-这是一个知识分享类动态 HTML，适合全屏播放或录屏成视频。
+这是一个知识分享类动态 HTML，用“Agent 参与 ARG 游戏”的方式介绍 ARG 行动链路。
 
-## 打开方式
+## 预览
 
-直接用浏览器打开：
+直接打开：
 
 ```text
 index.html
 ```
 
-或使用自动播放模式：
+自动播放：
 
 ```text
 index.html?autoplay=1
+```
+
+指定页码截图：
+
+```text
+index.html?slide=3&recording=1
 ```
 
 ## 控制
@@ -21,13 +27,27 @@ index.html?autoplay=1
 - `← / →`：上一页 / 下一页
 - `Space`：播放 / 暂停
 - `N`：显示 / 隐藏演讲稿
-- `R`：录屏模式，隐藏控制条
+- `R`：录屏模式
 - `F`：全屏
 
-## 建议录屏流程
+## 成片
 
-1. 打开 `index.html?autoplay=1`
-2. 按 `F` 全屏
-3. 按 `R` 进入录屏模式
-4. 使用 OBS、系统录屏或浏览器录制工具录制
+`make_video.py` 会：
 
+1. 用 Chrome/Edge 对每页 HTML 截图；
+2. 调用阿里百炼 `qwen3-tts-flash` 的 `multimodal-generation/generation` 接口生成旁白；
+3. 用 `ffmpeg` 合成最终 MP4。
+
+运行：
+
+```bash
+python make_video.py
+```
+
+默认读取仓库上级目录的 `阿里tts-apikey.txt`，也可以使用环境变量 `DASHSCOPE_API_KEY`。
+
+输出：
+
+```text
+arg-action-chain-intro.mp4
+```

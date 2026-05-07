@@ -3,33 +3,41 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ARG 行动链路｜知识分享动态演示</title>
+  <title>ARG 行动链路｜Agent 闯关式知识分享</title>
   <style>
     :root {
-      --bg: #0b0f14;
-      --panel: #121923;
-      --panel-2: #182231;
-      --ink: #f4efe4;
-      --muted: #9dafc5;
-      --line: #2d3b4f;
-      --cyan: #19d3ff;
-      --gold: #f2b84b;
-      --red: #ff4b6a;
-      --green: #58d68d;
-      --shadow: 0 28px 90px rgba(0, 0, 0, .45);
-      --ease: cubic-bezier(.2, .8, .18, 1);
+      --bg: #080b10;
+      --paper: #f2e4bd;
+      --ink: #f7efe0;
+      --muted: #aeb8c8;
+      --cyan: #21d6ff;
+      --amber: #f6b744;
+      --red: #ff3d64;
+      --green: #5ee08d;
+      --violet: #9a7cff;
+      --panel: rgba(14, 20, 30, .82);
+      --line: rgba(174, 184, 200, .24);
+      --ease: cubic-bezier(.18, .82, .22, 1);
     }
 
     * { box-sizing: border-box; }
 
+    html {
+      width: 100%;
+      height: 100%;
+      background: #080b10;
+    }
+
     body {
       margin: 0;
+      width: 100%;
+      min-height: 100%;
       overflow: hidden;
       color: var(--ink);
       background:
-        radial-gradient(circle at 18% 18%, rgba(25, 211, 255, .12), transparent 28%),
-        radial-gradient(circle at 82% 70%, rgba(242, 184, 75, .10), transparent 30%),
-        linear-gradient(135deg, #080b10 0%, #101722 48%, #07090d 100%);
+        radial-gradient(circle at 18% 18%, rgba(33, 214, 255, .14), transparent 28%),
+        radial-gradient(circle at 78% 72%, rgba(246, 183, 68, .12), transparent 30%),
+        linear-gradient(135deg, #06080c 0%, #101724 48%, #070910 100%);
       font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "SimHei", sans-serif;
     }
 
@@ -38,32 +46,33 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: .22;
+      opacity: .25;
       background-image:
-        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
-      background-size: 54px 54px;
-      mask-image: radial-gradient(circle at center, black, transparent 78%);
+        linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: radial-gradient(circle at center, black 0 58%, transparent 82%);
     }
 
     .stage {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      padding: clamp(18px, 2.2vw, 34px);
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      padding: clamp(16px, 2vw, 30px);
     }
 
     .deck {
       position: relative;
       width: 100%;
       height: 100%;
-      border: 1px solid rgba(157, 175, 197, .22);
-      background:
-        linear-gradient(145deg, rgba(18, 25, 35, .94), rgba(10, 14, 20, .92)),
-        radial-gradient(circle at 18% 80%, rgba(25, 211, 255, .10), transparent 32%);
-      border-radius: 26px;
       overflow: hidden;
-      box-shadow: var(--shadow);
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(145deg, rgba(16, 24, 36, .96), rgba(6, 8, 12, .94)),
+        radial-gradient(circle at 20% 82%, rgba(33,214,255,.11), transparent 35%);
+      box-shadow: 0 40px 110px rgba(0,0,0,.55);
     }
 
     .deck::after {
@@ -71,20 +80,19 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
-      background: linear-gradient(90deg, rgba(255,255,255,.06), transparent 18%, transparent 82%, rgba(255,255,255,.035));
-      mix-blend-mode: screen;
+      background: linear-gradient(90deg, rgba(255,255,255,.055), transparent 18%, transparent 82%, rgba(255,255,255,.035));
     }
 
     .slide {
       position: absolute;
       inset: 0;
       display: grid;
-      grid-template-columns: minmax(0, 1.04fr) minmax(330px, .72fr);
-      gap: clamp(24px, 4vw, 64px);
-      padding: clamp(42px, 6vw, 86px);
+      grid-template-columns: minmax(0, 1fr) minmax(420px, .75fr);
+      gap: clamp(26px, 4vw, 68px);
+      padding: clamp(46px, 6vw, 90px);
       opacity: 0;
-      transform: translateX(42px) scale(.985);
-      transition: opacity .55s var(--ease), transform .65s var(--ease);
+      transform: translateX(48px) scale(.985);
+      transition: opacity .55s var(--ease), transform .7s var(--ease);
       pointer-events: none;
     }
 
@@ -94,8 +102,8 @@
       pointer-events: auto;
     }
 
-    .slide.hero,
-    .slide.center {
+    .slide.center,
+    .slide.hero {
       grid-template-columns: 1fr;
       align-items: center;
     }
@@ -103,412 +111,393 @@
     .kicker {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       color: var(--cyan);
-      font-size: clamp(14px, 1.3vw, 18px);
+      font-weight: 900;
       letter-spacing: .08em;
       text-transform: uppercase;
-      font-weight: 800;
-      margin-bottom: 20px;
+      font-size: clamp(14px, 1.1vw, 18px);
+      margin-bottom: 22px;
     }
 
     .kicker::before {
       content: "";
-      width: 34px;
+      width: 44px;
       height: 2px;
       background: var(--cyan);
-      box-shadow: 0 0 22px rgba(25, 211, 255, .75);
+      box-shadow: 0 0 24px rgba(33,214,255,.7);
     }
 
     h1, h2 {
       margin: 0;
       font-family: "SimHei", "Microsoft YaHei UI", sans-serif;
+      line-height: .94;
       letter-spacing: 0;
-      line-height: .96;
-    }
-
-    h1 {
-      max-width: 980px;
-      font-size: clamp(58px, 8.2vw, 132px);
       text-wrap: balance;
     }
 
-    h2 {
-      max-width: 900px;
-      font-size: clamp(46px, 6vw, 92px);
-      text-wrap: balance;
-    }
+    h1 { font-size: clamp(64px, 8.7vw, 138px); max-width: 1050px; }
+    h2 { font-size: clamp(48px, 6.2vw, 94px); max-width: 980px; }
 
     .lead {
-      max-width: 920px;
-      margin-top: 28px;
+      max-width: 940px;
       color: var(--muted);
-      font-size: clamp(21px, 2.3vw, 35px);
-      line-height: 1.35;
-      font-weight: 600;
+      font-size: clamp(21px, 2.2vw, 34px);
+      line-height: 1.36;
+      font-weight: 700;
+      margin-top: 28px;
     }
 
-    .em {
-      color: var(--gold);
-      text-shadow: 0 0 32px rgba(242, 184, 75, .28);
-    }
-
-    .danger { color: var(--red); }
+    .em { color: var(--amber); text-shadow: 0 0 30px rgba(246,183,68,.25); }
     .cyan { color: var(--cyan); }
+    .red { color: var(--red); }
     .green { color: var(--green); }
+    .violet { color: var(--violet); }
 
-    .visual {
+    .hud-card {
       position: relative;
-      min-height: 460px;
-      border-radius: 22px;
-      border: 1px solid rgba(157, 175, 197, .20);
-      background: linear-gradient(160deg, rgba(24, 34, 49, .86), rgba(8, 11, 16, .58));
+      min-height: 510px;
+      border-radius: 26px;
+      border: 1px solid var(--line);
+      background: linear-gradient(160deg, rgba(21,31,47,.88), rgba(7,10,15,.72));
       overflow: hidden;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
     }
 
-    .visual::before {
+    .hud-card::before {
       content: "";
       position: absolute;
       inset: -20%;
       background:
-        radial-gradient(circle at 30% 22%, rgba(25, 211, 255, .18), transparent 22%),
-        radial-gradient(circle at 72% 80%, rgba(255, 75, 106, .15), transparent 24%);
-      animation: drift 9s ease-in-out infinite alternate;
+        radial-gradient(circle at 28% 18%, rgba(33,214,255,.22), transparent 22%),
+        radial-gradient(circle at 80% 78%, rgba(255,61,100,.16), transparent 26%);
+      animation: nebula 8s ease-in-out infinite alternate;
     }
 
-    @keyframes drift {
-      from { transform: translate3d(-2%, -1%, 0) rotate(0deg); }
-      to { transform: translate3d(2%, 1%, 0) rotate(4deg); }
+    @keyframes nebula {
+      from { transform: translate(-2%, -1%) rotate(0deg); }
+      to { transform: translate(2%, 1%) rotate(4deg); }
     }
 
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 34px;
+    .agent {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 172px;
+      height: 172px;
+      transform: translate(-50%, -50%);
+      border-radius: 38px;
+      background: linear-gradient(145deg, #1b283a, #09101b);
+      border: 1px solid rgba(33,214,255,.42);
+      box-shadow: 0 0 38px rgba(33,214,255,.18), inset 0 0 30px rgba(33,214,255,.06);
+      display: grid;
+      place-items: center;
+      font-size: 76px;
+      font-weight: 900;
+      color: var(--cyan);
+      animation: float 3.2s ease-in-out infinite alternate;
     }
 
-    .chip {
-      padding: 12px 16px;
-      border: 1px solid rgba(157, 175, 197, .24);
-      background: rgba(8, 11, 16, .44);
+    @keyframes float {
+      from { transform: translate(-50%, -52%); }
+      to { transform: translate(-50%, -47%); }
+    }
+
+    .thought {
+      position: absolute;
+      padding: 14px 18px;
       border-radius: 999px;
-      color: var(--ink);
-      font-size: clamp(15px, 1.25vw, 19px);
-      font-weight: 800;
+      background: rgba(8, 11, 16, .72);
+      border: 1px solid rgba(255,255,255,.16);
+      font-size: clamp(16px, 1.25vw, 21px);
+      font-weight: 900;
+      color: var(--muted);
+      opacity: 0;
+      transform: scale(.9);
     }
 
-    .list {
-      display: grid;
-      gap: 18px;
-      margin-top: 34px;
-      max-width: 860px;
+    .active .thought { animation: pop .55s var(--ease) forwards; }
+    .thought.a { left: 34px; top: 58px; }
+    .thought.b { right: 38px; top: 132px; animation-delay: .18s; }
+    .thought.c { left: 52px; bottom: 110px; animation-delay: .36s; }
+    .thought.d { right: 54px; bottom: 54px; animation-delay: .54s; }
+
+    @keyframes pop {
+      to { opacity: 1; transform: scale(1); }
     }
 
-    .item {
-      display: grid;
-      grid-template-columns: 42px 1fr;
-      gap: 16px;
-      align-items: start;
-      padding: 18px 20px;
-      border: 1px solid rgba(157, 175, 197, .18);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, .045);
-      transform: translateY(16px);
+    .clue-card {
+      position: relative;
+      padding: 28px;
+      border-radius: 22px;
+      color: #1c160d;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.38), transparent 22%),
+        var(--paper);
+      border: 1px solid rgba(94, 64, 24, .35);
+      box-shadow: 0 20px 55px rgba(0,0,0,.38);
+      transform: rotate(-2deg) translateY(24px);
       opacity: 0;
     }
 
-    .active .item {
-      animation: rise .55s var(--ease) forwards;
+    .active .clue-card { animation: cardIn .7s var(--ease) forwards; }
+    .clue-card:nth-child(2) { transform: rotate(2deg) translateY(24px); animation-delay: .16s; }
+    .clue-card:nth-child(3) { transform: rotate(-1deg) translateY(24px); animation-delay: .32s; }
+
+    @keyframes cardIn {
+      to { opacity: 1; transform: rotate(0) translateY(0); }
     }
 
-    .active .item:nth-child(2) { animation-delay: .12s; }
-    .active .item:nth-child(3) { animation-delay: .24s; }
-    .active .item:nth-child(4) { animation-delay: .36s; }
-    .active .item:nth-child(5) { animation-delay: .48s; }
-
-    @keyframes rise {
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .badge {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: rgba(25, 211, 255, .12);
-      color: var(--cyan);
-      font-weight: 900;
-      border: 1px solid rgba(25, 211, 255, .34);
-    }
-
-    .item b {
+    .clue-card small {
       display: block;
-      font-size: clamp(21px, 2vw, 30px);
-      margin-bottom: 5px;
+      color: #7c551e;
+      font-weight: 900;
+      letter-spacing: .08em;
+      margin-bottom: 10px;
     }
 
-    .item span {
-      color: var(--muted);
-      font-size: clamp(15px, 1.25vw, 19px);
-      line-height: 1.45;
+    .clue-card strong {
+      display: block;
+      font-size: clamp(25px, 2.5vw, 42px);
+      line-height: 1.08;
     }
 
-    .cards {
+    .room {
       position: absolute;
-      inset: 42px;
+      inset: 48px;
       display: grid;
-      gap: 18px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
       align-content: center;
     }
 
-    .clue {
+    .door {
+      min-height: 210px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(10,14,20,.92), rgba(21,31,47,.75));
+      border: 1px solid rgba(174,184,200,.22);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 20px;
       position: relative;
-      padding: 22px;
-      border-radius: 20px;
-      background: rgba(11, 15, 20, .78);
-      border: 1px solid rgba(157, 175, 197, .20);
-      box-shadow: 0 20px 50px rgba(0,0,0,.25);
-      transform: translateX(34px);
+      overflow: hidden;
+      transform: translateY(22px);
       opacity: 0;
     }
 
-    .active .clue {
-      animation: slideIn .62s var(--ease) forwards;
-    }
+    .active .door { animation: rise .6s var(--ease) forwards; }
+    .door:nth-child(2) { animation-delay: .12s; }
+    .door:nth-child(3) { animation-delay: .24s; }
 
-    .active .clue:nth-child(2) { animation-delay: .14s; }
-    .active .clue:nth-child(3) { animation-delay: .28s; }
-    .active .clue:nth-child(4) { animation-delay: .42s; }
-
-    @keyframes slideIn {
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .clue small {
-      color: var(--cyan);
+    .door::after {
+      content: "LOCKED";
+      position: absolute;
+      left: 50%;
+      top: 20px;
+      transform: translateX(-50%);
+      color: var(--red);
+      font-size: 13px;
+      letter-spacing: .18em;
       font-weight: 900;
-      letter-spacing: .05em;
     }
 
-    .clue strong {
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .door b {
       display: block;
-      margin-top: 8px;
-      font-size: clamp(21px, 1.8vw, 30px);
+      font-size: clamp(24px, 2vw, 34px);
+      margin-bottom: 10px;
+    }
+
+    .door span {
+      color: var(--muted);
+      line-height: 1.42;
+      font-weight: 700;
     }
 
     .flow {
       position: absolute;
-      inset: 54px;
+      inset: 56px;
       display: grid;
       align-content: center;
-      gap: 26px;
+      gap: 28px;
     }
 
     .flow-row {
       display: grid;
-      grid-template-columns: 1fr 48px 1fr 48px 1fr;
+      grid-template-columns: 1fr 54px 1fr 54px 1fr;
       gap: 14px;
       align-items: center;
     }
 
     .node {
-      min-height: 118px;
+      min-height: 120px;
       display: grid;
       place-items: center;
       text-align: center;
       padding: 18px;
-      border-radius: 20px;
-      background: rgba(8, 11, 16, .64);
-      border: 1px solid rgba(157, 175, 197, .23);
-      font-size: clamp(18px, 1.4vw, 24px);
+      border-radius: 22px;
+      background: rgba(7, 11, 17, .68);
+      border: 1px solid rgba(174,184,200,.22);
+      font-size: clamp(18px, 1.5vw, 25px);
       font-weight: 900;
     }
 
-    .arrow {
-      color: var(--gold);
-      font-size: 36px;
-      text-align: center;
-    }
+    .arrow { color: var(--amber); font-size: 38px; text-align: center; }
 
-    .contract-grid {
+    .contract {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px;
-      margin-top: 36px;
+      margin-top: 38px;
     }
 
-    .contract-cell {
-      min-height: 124px;
+    .cell {
+      min-height: 128px;
       padding: 22px;
       border-radius: 20px;
       background: rgba(255,255,255,.05);
-      border: 1px solid rgba(157, 175, 197, .20);
+      border: 1px solid rgba(174,184,200,.2);
+      opacity: 0;
+      transform: translateY(18px);
     }
 
-    .contract-cell b {
-      display: block;
-      color: var(--gold);
-      font-size: clamp(22px, 2vw, 32px);
-      margin-bottom: 10px;
-    }
+    .active .cell { animation: rise .55s var(--ease) forwards; }
+    .active .cell:nth-child(2) { animation-delay: .08s; }
+    .active .cell:nth-child(3) { animation-delay: .16s; }
+    .active .cell:nth-child(4) { animation-delay: .24s; }
+    .active .cell:nth-child(5) { animation-delay: .32s; }
+    .active .cell:nth-child(6) { animation-delay: .4s; }
 
-    .contract-cell span {
-      color: var(--muted);
-      font-size: clamp(15px, 1.2vw, 18px);
-      line-height: 1.45;
-    }
+    .cell b { display: block; color: var(--amber); font-size: clamp(25px, 2vw, 35px); margin-bottom: 10px; }
+    .cell span { color: var(--muted); font-weight: 700; line-height: 1.45; }
 
-    .code-card {
+    .code {
       position: absolute;
-      inset: 52px;
+      inset: 54px;
       padding: 34px;
       border-radius: 24px;
-      background: #080c12;
-      border: 1px solid rgba(25, 211, 255, .22);
+      background: #070b11;
+      border: 1px solid rgba(33,214,255,.25);
+      color: #d8f3ff;
       font-family: "Cascadia Code", "Consolas", monospace;
-      color: #cfe8f4;
-      font-size: clamp(15px, 1.18vw, 20px);
-      line-height: 1.65;
+      font-size: clamp(15px, 1.2vw, 20px);
+      line-height: 1.7;
       white-space: pre-wrap;
-      box-shadow: inset 0 0 40px rgba(25, 211, 255, .045);
+      box-shadow: inset 0 0 42px rgba(33,214,255,.05);
     }
 
-    .terminal-line {
+    .line {
       display: block;
       opacity: 0;
       transform: translateY(8px);
     }
 
-    .active .terminal-line {
-      animation: typeLine .45s var(--ease) forwards;
-    }
+    .active .line { animation: typeLine .38s var(--ease) forwards; }
+    .active .line:nth-child(2) { animation-delay: .08s; }
+    .active .line:nth-child(3) { animation-delay: .16s; }
+    .active .line:nth-child(4) { animation-delay: .24s; }
+    .active .line:nth-child(5) { animation-delay: .32s; }
+    .active .line:nth-child(6) { animation-delay: .4s; }
+    .active .line:nth-child(7) { animation-delay: .48s; }
+    .active .line:nth-child(8) { animation-delay: .56s; }
 
-    .active .terminal-line:nth-child(2) { animation-delay: .1s; }
-    .active .terminal-line:nth-child(3) { animation-delay: .2s; }
-    .active .terminal-line:nth-child(4) { animation-delay: .3s; }
-    .active .terminal-line:nth-child(5) { animation-delay: .4s; }
-    .active .terminal-line:nth-child(6) { animation-delay: .5s; }
-    .active .terminal-line:nth-child(7) { animation-delay: .6s; }
-
-    @keyframes typeLine {
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes typeLine { to { opacity: 1; transform: translateY(0); } }
 
     .quote {
-      font-size: clamp(42px, 5.4vw, 86px);
+      max-width: 1140px;
+      font-size: clamp(44px, 5.7vw, 92px);
       line-height: 1.08;
-      max-width: 1120px;
       font-weight: 900;
       text-wrap: balance;
     }
 
+    .chips { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+    .chip {
+      padding: 13px 17px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(174,184,200,.23);
+      font-weight: 900;
+      font-size: clamp(15px, 1.2vw, 19px);
+    }
+
     .controls {
       position: fixed;
+      z-index: 40;
       left: 50%;
       bottom: 22px;
       transform: translateX(-50%);
       display: flex;
       gap: 10px;
-      z-index: 20;
       padding: 8px;
       border-radius: 999px;
-      background: rgba(8, 11, 16, .72);
-      border: 1px solid rgba(157,175,197,.22);
+      background: rgba(6, 8, 12, .78);
+      border: 1px solid rgba(174,184,200,.23);
       backdrop-filter: blur(14px);
     }
 
     button {
-      height: 40px;
       min-width: 44px;
+      height: 40px;
       border: 0;
       border-radius: 999px;
       color: var(--ink);
-      background: rgba(255,255,255,.07);
+      background: rgba(255,255,255,.08);
       font-weight: 900;
       cursor: pointer;
     }
-
-    button:hover { background: rgba(25,211,255,.18); }
 
     .hud {
       position: fixed;
       top: 22px;
       left: 32px;
       right: 32px;
-      z-index: 25;
+      z-index: 35;
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 900;
       pointer-events: none;
     }
 
-    .progress {
-      flex: 1;
-      height: 4px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.12);
-      overflow: hidden;
-    }
-
-    .bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--cyan), var(--gold));
-      transition: width .35s var(--ease);
-    }
+    .progress { flex: 1; height: 4px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,.13); }
+    .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--cyan), var(--amber), var(--red)); transition: width .35s var(--ease); }
 
     .notes {
       position: fixed;
       right: 24px;
-      top: 72px;
-      width: min(420px, 32vw);
+      top: 74px;
+      z-index: 50;
+      width: min(430px, 34vw);
       max-height: calc(100vh - 150px);
       overflow: auto;
-      z-index: 30;
       padding: 18px;
-      color: #dce6f5;
-      background: rgba(8, 11, 16, .84);
-      border: 1px solid rgba(157,175,197,.24);
       border-radius: 18px;
-      backdrop-filter: blur(16px);
+      background: rgba(6, 8, 12, .86);
+      border: 1px solid rgba(174,184,200,.24);
+      color: #dfe8f6;
+      line-height: 1.6;
+      font-size: 15px;
       transform: translateX(calc(100% + 40px));
       transition: transform .35s var(--ease);
-      line-height: 1.58;
-      font-size: 15px;
+      backdrop-filter: blur(16px);
     }
 
     .notes.show { transform: translateX(0); }
-    .notes b { color: var(--gold); }
-
-    .recording .controls,
-    .recording .notes,
-    .recording .hud {
-      display: none;
-    }
-
-    .recording .stage {
-      padding: 0;
-    }
-
-    .recording .deck {
-      border-radius: 0;
-      border: 0;
-    }
+    .recording .controls, .recording .hud, .recording .notes { display: none; }
+    .recording .stage { padding: 0; }
+    .recording .deck { border-radius: 0; border: 0; }
 
     @media (max-width: 900px) {
-      .slide {
-        grid-template-columns: 1fr;
-        overflow-y: auto;
-        padding: 72px 28px;
-      }
-      .visual { min-height: 330px; }
-      .contract-grid { grid-template-columns: 1fr; }
+      .slide { grid-template-columns: 1fr; overflow-y: auto; padding: 72px 28px; }
+      .hud-card { min-height: 380px; }
+      .contract { grid-template-columns: 1fr; }
       .flow-row { grid-template-columns: 1fr; }
       .arrow { transform: rotate(90deg); }
       .notes { width: calc(100vw - 32px); right: 16px; }
@@ -517,261 +506,241 @@
 </head>
 <body>
   <div class="hud">
-    <span id="counter">01 / 10</span>
+    <span id="counter">01 / 11</span>
     <div class="progress"><div class="bar" id="bar"></div></div>
-    <span>ARG ACTION CHAIN</span>
+    <span>AGENT ARG MODE</span>
   </div>
 
   <main class="stage">
-    <section class="deck" id="deck">
-      <article class="slide hero active" data-note="开场不要先解释概念，先抓住每个 Agent 使用者都经历过的痛点：越聪明，越容易乱跑。ARG 行动链路就是为这个问题设计的。">
+    <section class="deck">
+      <article class="slide hero active" data-note="开场要像游戏预告片：我们不是发布一个框架，而是打开一扇门，把 Agent 放进一个只允许按线索行动的 ARG 游戏。">
         <div>
-          <div class="kicker">Knowledge Share</div>
-          <h1>ARG<br><span class="em">行动链路</span></h1>
-          <p class="lead">一套用 Step Contract 控制 Agent 发散、幻觉和自我欺骗的工程设计方案。</p>
-          <div class="chips">
-            <span class="chip">逐步揭示</span>
-            <span class="chip">契约执行</span>
-            <span class="chip">验证门禁</span>
-            <span class="chip">格子化判断</span>
+          <div class="kicker">Open The Game</div>
+          <h1>把 Agent<br>放进一场 <span class="em">ARG 游戏</span></h1>
+          <p class="lead">ARG 行动链路：用线索卡、验证门和通关规则，限制 Agent 的发散、幻觉和自我欺骗。</p>
+          <div class="chips"><span class="chip">Clue Card</span><span class="chip">Validation Gate</span><span class="chip">Unlock Next Step</span></div>
+        </div>
+      </article>
+
+      <article class="slide" data-note="先演出失控：Agent 不是坏，它只是看见太多、能做太多、还太愿意替你发挥。">
+        <div>
+          <div class="kicker">Before ARG</div>
+          <h2>普通 Agent 像被丢进开放世界</h2>
+          <p class="lead">地图全开、支线全开、还能自己给自己发通关证书。听着很自由，跑起来就很刺激。</p>
+        </div>
+        <div class="hud-card">
+          <div class="agent">A</div>
+          <div class="thought a">我顺便优化一下流程</div>
+          <div class="thought b">这个标签我觉得可以新增</div>
+          <div class="thought c">后面几步我先替你规划了</div>
+          <div class="thought d">我检查过了，完成</div>
+        </div>
+      </article>
+
+      <article class="slide" data-note="把痛点具象化成三扇错误之门：发散、幻觉、自我验收。ARG 行动链路要做的就是把这些门锁上。">
+        <div>
+          <div class="kicker">Three Bad Doors</div>
+          <h2>多步任务里，最危险的是三扇门</h2>
+          <p class="lead">每一扇门背后，都是 Agent 的“好心办坏事”。</p>
+        </div>
+        <div class="hud-card">
+          <div class="room">
+            <div class="door"><div><b class="red">发散之门</b><span>从当前任务，跑到未来流程。</span></div></div>
+            <div class="door"><div><b class="red">幻觉之门</b><span>从模糊要求，长出新字段。</span></div></div>
+            <div class="door"><div><b class="red">自检之门</b><span>从完成声明，伪装成验收。</span></div></div>
           </div>
         </div>
       </article>
 
-      <article class="slide" data-note="这一页讲真实痛点：Agent 不是不努力，而是自由度太大。它看到全局后会替你规划，看到模糊要求后会自作主张。">
+      <article class="slide center" data-note="核心反转：不要再给 Agent 开放世界，而是给它 ARG 线索卡。它是玩家，不是出题人。">
         <div>
-          <div class="kicker">Problem</div>
-          <h2>Agent 的问题不是不聪明</h2>
-          <p class="lead">恰恰相反，很多问题来自它太想“帮忙”。</p>
-          <div class="list">
-            <div class="item"><div class="badge">1</div><div><b class="danger">超前规划</b><span>你让它做第三步，它已经开始重写第七步。</span></div></div>
-            <div class="item"><div class="badge">2</div><div><b class="danger">行动发散</b><span>模糊指令会诱发新标签、新字段和额外动作。</span></div></div>
-            <div class="item"><div class="badge">3</div><div><b class="danger">自我验收</b><span>自己产出，自己检查，然后说“看起来没问题”。</span></div></div>
-          </div>
+          <div class="kicker">The Turn</div>
+          <p class="quote">别让 Agent 当<span class="red">出题人</span>。<br>让它成为<span class="em">解谜玩家</span>。</p>
+          <p class="lead">玩家只能拿当前线索。通过验证，才能看下一张。</p>
         </div>
-        <div class="visual">
-          <div class="cards">
-            <div class="clue"><small>REQUEST</small><strong>请处理当前数据</strong></div>
-            <div class="clue"><small>AGENT</small><strong>我顺便优化了流程</strong></div>
-            <div class="clue"><small>OUTPUT</small><strong>多了三个你没要的字段</strong></div>
-            <div class="clue"><small>CHECK</small><strong>我觉得已经完成</strong></div>
+      </article>
+
+      <article class="slide" data-note="用三张纸质线索卡表现 Step Contract。观众要记住：这不是计划文档，而是一张当前关卡卡片。">
+        <div>
+          <div class="kicker">Clue Cards</div>
+          <h2>Step Contract 就是线索卡</h2>
+          <p class="lead">每张卡只描述当前关卡，不泄露整张地图。</p>
+        </div>
+        <div class="hud-card">
+          <div style="position:absolute;inset:58px;display:grid;gap:20px;align-content:center;">
+            <div class="clue-card"><small>CLUE 01</small><strong>读取输入，只做 fetch</strong></div>
+            <div class="clue-card"><small>CLUE 02</small><strong>判断字段，只填格子</strong></div>
+            <div class="clue-card"><small>CLUE 03</small><strong>验证通过，解锁报告</strong></div>
           </div>
         </div>
       </article>
 
-      <article class="slide center" data-note="这一页是核心反转。不要继续把 Agent 当万能执行者，而是把它放进 ARG 游戏结构里：拿线索、解谜、验证、解锁下一步。">
+      <article class="slide" data-note="这一页把游戏循环讲清楚：读卡、执行、验证、解锁。下一步不是靠 Agent 想，而是靠契约指针。">
         <div>
-          <div class="kicker">Shift</div>
-          <p class="quote">别把 Agent 当<span class="danger">架构师</span>。<br>把它变成 <span class="em">ARG 玩家</span>。</p>
-          <p class="lead">玩家只看到当前线索卡。解开、验证、通过，才获得下一张。</p>
+          <div class="kicker">Game Loop</div>
+          <h2>ARG 行动链路的核心循环</h2>
+          <p class="lead">Agent 不需要知道全图。它只需要通过当前关。</p>
         </div>
-      </article>
-
-      <article class="slide" data-note="这里解释运行机制。ARG 行动链路最关键的是逐步揭示：当前 step 是唯一行动边界，下一步不是靠 Agent 推理，而是由契约指针解锁。">
-        <div>
-          <div class="kicker">Mechanism</div>
-          <h2>一条链路，只暴露当前一步</h2>
-          <p class="lead">Agent 不需要知道全图，也不应该知道全图。</p>
-        </div>
-        <div class="visual">
+        <div class="hud-card">
           <div class="flow">
             <div class="flow-row">
-              <div class="node">读取当前<br>Step Contract</div>
-              <div class="arrow">→</div>
-              <div class="node">执行当前<br>任务</div>
-              <div class="arrow">→</div>
-              <div class="node">运行验证<br>命令</div>
+              <div class="node">读取当前<br>线索卡</div><div class="arrow">→</div>
+              <div class="node">执行当前<br>任务</div><div class="arrow">→</div>
+              <div class="node">进入验证<br>门禁</div>
             </div>
             <div class="flow-row">
-              <div class="node">失败处理<br>重试/降级/终止</div>
-              <div class="arrow">←</div>
-              <div class="node green">PASS</div>
-              <div class="arrow">→</div>
-              <div class="node">解锁<br>下一步</div>
+              <div class="node red">FAIL<br>重试/降级/终止</div><div class="arrow">←</div>
+              <div class="node green">PASS</div><div class="arrow">→</div>
+              <div class="node">解锁<br>下一张卡</div>
             </div>
           </div>
         </div>
       </article>
 
-      <article class="slide center" data-note="这一页是方法论最重要的标准件：Step Contract 六字段。你可以强调：没有这六个字段，就不是 ARG 行动链路，只是写得比较长的提示词。">
+      <article class="slide center" data-note="六字段是可复制的标准。强调：没有六字段，Agent 就会开始猜。">
         <div>
-          <div class="kicker">Step Contract</div>
-          <h2>每张线索卡，必须回答六件事</h2>
-          <div class="contract-grid">
-            <div class="contract-cell"><b>输入</b><span>从哪里拿数据，不让 Agent 猜。</span></div>
-            <div class="contract-cell"><b>任务</b><span>只做当前一步，不顺手扩展。</span></div>
-            <div class="contract-cell"><b>输出</b><span>产物是什么，路径是什么。</span></div>
-            <div class="contract-cell"><b>验证命令</b><span>由脚本、断言或门禁验收。</span></div>
-            <div class="contract-cell"><b>失败处理</b><span>重试、跳过、降级或终止。</span></div>
-            <div class="contract-cell"><b>下一步</b><span>通过后解锁什么，或 TERMINAL。</span></div>
+          <div class="kicker">Six Fields</div>
+          <h2>一张卡，必须写清六件事</h2>
+          <div class="contract">
+            <div class="cell"><b>输入</b><span>从哪里拿，不猜。</span></div>
+            <div class="cell"><b>任务</b><span>只做什么，不扩展。</span></div>
+            <div class="cell"><b>输出</b><span>产物在哪，不含糊。</span></div>
+            <div class="cell"><b>验证</b><span>怎么过关，不自检。</span></div>
+            <div class="cell"><b>失败处理</b><span>失败怎么办，不乱试。</span></div>
+            <div class="cell"><b>下一步</b><span>通过去哪，不推理。</span></div>
           </div>
         </div>
       </article>
 
-      <article class="slide" data-note="这一页讲格子化判断。LLM 不是不能用，而是只能在被授权的字段里用。不要让它写散文，不要让它改原始数据。">
+      <article class="slide" data-note="LLM 的能力不是禁用，而是限域。格子化判断是 ARG 行动链路里非常关键的做法。">
         <div>
-          <div class="kicker">Boxing</div>
+          <div class="kicker">Bound The Magic</div>
           <h2>LLM 可以判断，但必须进格子</h2>
-          <p class="lead">语义能力保留，自由发挥拿掉。</p>
+          <p class="lead">自由文本越多，幻觉空间越大。字段越明确，行为越可控。</p>
         </div>
-        <div class="visual">
-          <pre class="code-card"><span class="terminal-line">For each item, fill:</span>
-<span class="terminal-line">relevant: yes / no / uncertain</span>
-<span class="terminal-line">category: bug / feature / question / other</span>
-<span class="terminal-line">severity: high / medium / low</span>
-<span class="terminal-line">summary: 80 字以内中文</span>
-<span class="terminal-line"></span>
-<span class="terminal-line">raw content, url, author: script-owned</span></pre>
+        <div class="hud-card">
+          <pre class="code"><span class="line">Agent may fill:</span>
+<span class="line">relevant: yes / no / uncertain</span>
+<span class="line">category: bug / feature / question / other</span>
+<span class="line">severity: high / medium / low</span>
+<span class="line">summary: 80 字以内中文</span>
+<span class="line"></span>
+<span class="line">Agent must not rewrite:</span>
+<span class="line">raw content / url / author / date</span></pre>
         </div>
       </article>
 
-      <article class="slide" data-note="这一页讲验证门禁。核心金句：Agent 说完成不算，exit code 说了算。自我检查不是验证，可执行检查才是验证。">
+      <article class="slide" data-note="验收门禁是把自我欺骗拦下来的核心。Agent 的完成声明不是事实，验证结果才是事实。">
         <div>
-          <div class="kicker">Validation</div>
-          <h2>验收权不在 Agent 手里</h2>
-          <p class="lead">Agent 可以执行任务，但不能靠自我声明通关。</p>
-          <div class="list">
-            <div class="item"><div class="badge">✓</div><div><b>JSON 能解析</b><span>结构有效，不是“看起来像”。</span></div></div>
-            <div class="item"><div class="badge">✓</div><div><b>枚举值合法</b><span>不允许发明新标签。</span></div></div>
-            <div class="item"><div class="badge">✓</div><div><b>数量一致</b><span>total 必须等于 items 长度。</span></div></div>
-          </div>
+          <div class="kicker">Validation Gate</div>
+          <h2>真正的门，不听解释</h2>
+          <p class="lead">Agent 说“我检查过了”不算。exit code 才算。</p>
         </div>
-        <div class="visual">
-          <pre class="code-card"><span class="terminal-line">python -c "</span>
-<span class="terminal-line">assert d['total'] == len(d['items'])</span>
-<span class="terminal-line">assert item['category'] in allowed</span>
-<span class="terminal-line">assert item['summary'].strip()</span>
-<span class="terminal-line">print('PASS')</span>
-<span class="terminal-line">"</span>
-<span class="terminal-line"># exit code decides</span></pre>
+        <div class="hud-card">
+          <pre class="code"><span class="line">python -c "</span>
+<span class="line">assert d['total'] == len(d['items'])</span>
+<span class="line">assert item['category'] in allowed</span>
+<span class="line">assert item['summary'].strip()</span>
+<span class="line">print('PASS')</span>
+<span class="line">"</span>
+<span class="line"></span>
+<span class="line">PASS unlocks the next clue.</span></pre>
         </div>
       </article>
 
-      <article class="slide center" data-note="这一页要避免夸大。ARG 行动链路不能消灭模型错误，但能让错误更少发生、更容易暴露、更容易被拦截。这个说法更工程化，也更可信。">
+      <article class="slide center" data-note="这一页要诚实：这不是消灭错误，而是让错误更难发生，更早暴露，更容易被拦。">
         <div>
-          <div class="kicker">What It Really Changes</div>
-          <p class="quote">它不能消灭模型错误。<br>但能让错误<span class="em">更少发生</span>、<span class="cyan">更早暴露</span>、<span class="green">更容易拦截</span>。</p>
+          <div class="kicker">What Changes</div>
+          <p class="quote">ARG 不是让模型<span class="em">永远正确</span>。<br>它是让错误<span class="cyan">更少发生</span>、<span class="green">更早暴露</span>、<span class="violet">更容易拦截</span>。</p>
         </div>
       </article>
 
-      <article class="slide" data-note="这一页把开源项目和 Skill 带出来。重点不是炫耀仓库，而是告诉别人：他们可以安装 arg-action-chain-designer，让 Agent 辅助设计自己的 ARG 链路。">
+      <article class="slide" data-note="最后把开源项目带出来：这不仅是想法，还有文档、模板、反模式指南和给 Agent 用的设计 Skill。">
         <div>
           <div class="kicker">Open Source</div>
           <h2>我把这套设计开源了</h2>
           <p class="lead">仓库里有完整范式、Step Contract 模板、反模式指南，以及给 Agent 安装使用的设计 Skill。</p>
-          <div class="chips">
-            <span class="chip">完整范式</span>
-            <span class="chip">Step 模板</span>
-            <span class="chip">反模式指南</span>
-            <span class="chip">arg-action-chain-designer</span>
-          </div>
+          <div class="chips"><span class="chip">完整范式</span><span class="chip">Step 模板</span><span class="chip">反模式指南</span><span class="chip">arg-action-chain-designer</span></div>
         </div>
-        <div class="visual">
-          <pre class="code-card"><span class="terminal-line">skills/arg-action-chain-designer/</span>
-<span class="terminal-line">├── SKILL.md</span>
-<span class="terminal-line">└── README.md</span>
-<span class="terminal-line"></span>
-<span class="terminal-line">用它来：</span>
-<span class="terminal-line">设计 ARG 链路</span>
-<span class="terminal-line">诊断 Step Contract</span>
-<span class="terminal-line">补齐验证门禁</span></pre>
+        <div class="hud-card">
+          <pre class="code"><span class="line">skills/arg-action-chain-designer/</span>
+<span class="line">├── SKILL.md</span>
+<span class="line">└── README.md</span>
+<span class="line"></span>
+<span class="line">Use it to design:</span>
+<span class="line">Step Contracts</span>
+<span class="line">Validation Gates</span>
+<span class="line">Failure Policies</span></pre>
         </div>
       </article>
 
-      <article class="slide hero" data-note="收尾要短，像视频结尾口播：如果你也被 Agent 的发散和自我验收坑过，试试 ARG 行动链路。它不是让 Agent 更自由，而是让 Agent 更难乱来。">
+      <article class="slide hero" data-note="收尾要像一句 slogan：不是让 Agent 更自由，而是让 Agent 更难乱来。">
         <div>
-          <div class="kicker">Closing</div>
+          <div class="kicker">Final Line</div>
           <h1>让 Agent<br><span class="em">更难乱来</span></h1>
           <p class="lead">如果你也被 Agent 的发散、幻觉和自我验收坑过，试试 ARG 行动链路。</p>
-          <div class="chips">
-            <span class="chip">GitHub: arg-action-chain</span>
-            <span class="chip">Skill: arg-action-chain-designer</span>
-          </div>
+          <div class="chips"><span class="chip">GitHub: arg-action-chain</span><span class="chip">Skill: arg-action-chain-designer</span></div>
         </div>
       </article>
     </section>
   </main>
 
   <aside class="notes" id="notes"></aside>
-
-  <nav class="controls" aria-label="presentation controls">
-    <button id="prev" title="上一页">‹</button>
-    <button id="play" title="播放/暂停">▶</button>
-    <button id="next" title="下一页">›</button>
-    <button id="noteToggle" title="演讲稿">稿</button>
-    <button id="recordToggle" title="录屏模式">录</button>
+  <nav class="controls">
+    <button id="prev">‹</button>
+    <button id="play">▶</button>
+    <button id="next">›</button>
+    <button id="noteToggle">稿</button>
+    <button id="recordToggle">录</button>
   </nav>
 
   <script>
     const slides = [...document.querySelectorAll('.slide')];
-    const counter = document.getElementById('counter');
-    const bar = document.getElementById('bar');
-    const notes = document.getElementById('notes');
-    const playBtn = document.getElementById('play');
-    let index = 0;
-    let playing = new URLSearchParams(location.search).get('autoplay') === '1';
+    const params = new URLSearchParams(location.search);
+    let index = Number(params.get('slide') || 0);
+    if (!Number.isFinite(index)) index = 0;
+    index = Math.max(0, Math.min(slides.length - 1, index));
+    let playing = params.get('autoplay') === '1';
     let timer = null;
-    const durations = [9000, 11000, 9000, 12000, 13000, 12000, 12000, 9000, 11000, 10000];
+    const durations = [10000, 12000, 11000, 9000, 11000, 12000, 12000, 12000, 12000, 10000, 12000, 9000];
+    if (params.get('recording') === '1') document.body.classList.add('recording');
 
     function render() {
       slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
-      counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-      bar.style.width = `${((index + 1) / slides.length) * 100}%`;
-      notes.innerHTML = `<b>演讲稿 ${index + 1}</b><br>${slides[index].dataset.note || ''}`;
-      playBtn.textContent = playing ? 'Ⅱ' : '▶';
-      schedule();
-    }
-
-    function schedule() {
+      document.getElementById('counter').textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+      document.getElementById('bar').style.width = `${((index + 1) / slides.length) * 100}%`;
+      document.getElementById('notes').innerHTML = `<b>演讲稿 ${index + 1}</b><br>${slides[index].dataset.note || ''}`;
+      document.getElementById('play').textContent = playing ? 'Ⅱ' : '▶';
       clearTimeout(timer);
-      if (!playing) return;
-      timer = setTimeout(() => {
-        if (index < slides.length - 1) {
-          index++;
-          render();
-        } else {
-          playing = false;
-          render();
-        }
-      }, durations[index] || 10000);
+      if (playing) {
+        timer = setTimeout(() => {
+          if (index < slides.length - 1) {
+            index++;
+            render();
+          } else {
+            playing = false;
+            render();
+          }
+        }, durations[index] || 10000);
+      }
     }
 
-    function next() {
-      index = Math.min(slides.length - 1, index + 1);
-      render();
-    }
+    function next() { index = Math.min(slides.length - 1, index + 1); render(); }
+    function prev() { index = Math.max(0, index - 1); render(); }
 
-    function prev() {
-      index = Math.max(0, index - 1);
-      render();
-    }
-
-    document.getElementById('next').addEventListener('click', next);
-    document.getElementById('prev').addEventListener('click', prev);
-    document.getElementById('play').addEventListener('click', () => {
-      playing = !playing;
-      render();
-    });
-    document.getElementById('noteToggle').addEventListener('click', () => {
-      notes.classList.toggle('show');
-    });
-    document.getElementById('recordToggle').addEventListener('click', () => {
-      document.body.classList.toggle('recording');
-    });
-
+    document.getElementById('next').onclick = next;
+    document.getElementById('prev').onclick = prev;
+    document.getElementById('play').onclick = () => { playing = !playing; render(); };
+    document.getElementById('noteToggle').onclick = () => document.getElementById('notes').classList.toggle('show');
+    document.getElementById('recordToggle').onclick = () => document.body.classList.toggle('recording');
     window.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowRight') next();
       if (event.key === 'ArrowLeft') prev();
-      if (event.key === ' ') {
-        event.preventDefault();
-        playing = !playing;
-        render();
-      }
-      if (event.key.toLowerCase() === 'n') notes.classList.toggle('show');
+      if (event.key === ' ') { event.preventDefault(); playing = !playing; render(); }
+      if (event.key.toLowerCase() === 'n') document.getElementById('notes').classList.toggle('show');
       if (event.key.toLowerCase() === 'r') document.body.classList.toggle('recording');
       if (event.key.toLowerCase() === 'f') document.documentElement.requestFullscreen?.();
     });
-
     render();
   </script>
 </body>

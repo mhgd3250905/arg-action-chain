@@ -10,6 +10,14 @@ temp/
 output/
 .data/
 
+# Generated presentation/video artifacts
+video/**/build/
+video/**/concat.txt
+video/**/*.mp4
+video/**/*.wav
+video/**/*.mp3
+video/**/*.m4a
+
 # Editor
 .idea/
 .vscode/
