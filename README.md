@@ -9,6 +9,7 @@
 </p>
 
 <p align="center">
+  <a href="./skills/arg-action-chain-designer">Agent Skill</a> ·
   <a href="./starter-kit">Starter Kit</a> ·
   <a href="./docs/getting-started.md">三分钟上手</a> ·
   <a href="./Step-Contract-模板.md">Step Contract 模板</a> ·
@@ -49,29 +50,43 @@ LLM Agent 很强，但一旦进入多步任务，经常开始做三件蠢事：
 | 验证门禁 | 用脚本、断言、exit code 验收 | 自我欺骗式完成 |
 | 数据防火墙 | 原始数据由脚本合并和保留 | Agent 污染关键数据 |
 
-## 三分钟上手
+## 三分钟上手：安装给 Agent 用
 
-复制 starter：
-
-```bash
-cp -r starter-kit my-first-arg-chain
-cd my-first-arg-chain
-```
-
-按你的任务修改三个地方：
+这个项目的主入口不是 CLI，而是一个给 Agent 安装使用的 Skill：
 
 ```text
-SKILL.md                 # 只放行动链引擎和触发方式
-plans/step-01-fetch.md   # 第一步线索卡
-plans/step-02-classify.md# 需要 LLM 判断的线索卡
-plans/step-03-report.md  # 结果收口线索卡
+skills/arg-action-chain-designer/
 ```
 
-一张 step 至少回答六个问题：
+安装到 Codex：
+
+```powershell
+Copy-Item -Recurse skills\arg-action-chain-designer "$env:USERPROFILE\.codex\skills\arg-action-chain-designer"
+```
+
+或安装到 agents skills：
+
+```powershell
+Copy-Item -Recurse skills\arg-action-chain-designer "$env:USERPROFILE\.agents\skills\arg-action-chain-designer"
+```
+
+然后在 Agent 对话里显式调用：
 
 ```text
-输入 -> 任务 -> 输出 -> 验证命令 -> 验证失败处理 -> 下一步
+用 arg-action-chain-designer 帮我把这个 Agent 任务拆成 ARG 行动链路。
 ```
+
+或者：
+
+```text
+检查这个 Step Contract 有没有缺少 ARG 细节。
+```
+
+这个 Skill 会辅助 Agent 做三件事：
+
+- 判断你的任务是否适合 ARG 行动链路
+- 帮你拆 step、设计 Step Contract 和验证门禁
+- 检查已有任务设计是否缺少输入、输出、验证、失败处理、下一步等关键细节
 
 完整教程见：[三分钟上手](./docs/getting-started.md)。
 
@@ -87,6 +102,8 @@ plans/step-03-report.md  # 结果收口线索卡
 ├── 范式对比与决策指南.md          # 什么时候该用 / 不该用
 ├── 反模式与踩坑指南.md            # 常见错误
 ├── 示例-工单反馈-Step02.md        # 脱敏虚构示例
+├── skills/
+│   └── arg-action-chain-designer/ # 给 Agent 安装使用的设计 Skill
 ├── docs/
 │   ├── getting-started.md        # 如何搭第一条链
 │   └── assets/cover.svg          # 项目封面
@@ -142,4 +159,3 @@ ARG 行动链路来自真实 Agent 工程实践中的反复验证。为了避免
 ## License
 
 [MIT](./LICENSE)
-

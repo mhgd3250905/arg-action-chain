@@ -1,36 +1,66 @@
 # 三分钟上手
 
-这份指南帮你搭出第一条 ARG 行动链路。别一上来搞宏大架构，先跑通三步：获取输入、语义判断、生成结果。
+这份指南讲的是如何把 `arg-action-chain-designer` 安装给 Agent 用，让 Agent 辅助你设计、诊断和补强 ARG 行动链路。
 
-## 1. 复制 starter
+## 1. 安装 Skill
 
-```bash
-cp -r starter-kit my-first-arg-chain
-cd my-first-arg-chain
-```
-
-如果你在 Windows PowerShell：
+安装到 Codex：
 
 ```powershell
-Copy-Item -Recurse starter-kit my-first-arg-chain
-Set-Location my-first-arg-chain
+Copy-Item -Recurse skills\arg-action-chain-designer "$env:USERPROFILE\.codex\skills\arg-action-chain-designer"
 ```
 
-## 2. 改 SKILL.md
+安装到 agents skills：
 
-`SKILL.md` 只保留三类信息：
+```powershell
+Copy-Item -Recurse skills\arg-action-chain-designer "$env:USERPROFILE\.agents\skills\arg-action-chain-designer"
+```
 
-- 什么时候触发
-- 当前步从哪里开始
-- 如何循环读取 step、执行、验证、进入下一步
+## 2. 显式调用
 
-不要把完整业务流程全塞进 `SKILL.md`。这会直接破坏逐步揭示。是的，很多人第一步就会这么干，然后怪 Agent 不听话，挺冤但也不冤。
+在对话里说：
 
-## 3. 写第一张 Step Contract
+```text
+用 arg-action-chain-designer 帮我把这个任务设计成 ARG 行动链路。
+```
 
-从 `plans/step-01-fetch.md` 开始。它只做一件事：准备输入数据。
+或者：
 
-一个合格 step 至少回答：
+```text
+检查下面这个 Step Contract 是否缺少 ARG 细节。
+```
+
+## 3. 让 Agent 帮你做什么
+
+这个 Skill 会引导 Agent 输出：
+
+- 任务是否适合 ARG
+- 推荐 step 列表
+- 每个 step 的输入、任务、输出、验证命令、失败处理、下一步
+- 哪些部分应该由 LLM 判断
+- 哪些部分应该脚本化
+- 哪些地方需要人工门禁
+- 现有设计缺了哪些 ARG 细节
+
+## 4. 设计一条真正的链路
+
+拿到设计结果后，再根据输出创建你自己的运行 Skill，例如：
+
+```text
+my-task-skill/
+├── SKILL.md
+├── plans/
+│   ├── step-01-fetch.md
+│   ├── step-02-process.md
+│   └── step-03-report.md
+└── scripts/
+```
+
+也可以参考仓库里的 `starter-kit/`。
+
+## 5. 一个合格 step 至少回答什么
+
+每张 Step Contract 至少包含：
 
 ```text
 输入是什么？
@@ -96,4 +126,3 @@ print('PASS')
 - 复制 [Step Contract 模板](../Step-Contract-模板.md)
 - 看 [示例走读](../示例-工单反馈-Step02.md)
 - 用 [反模式指南](../反模式与踩坑指南.md) 检查你的链路
-
