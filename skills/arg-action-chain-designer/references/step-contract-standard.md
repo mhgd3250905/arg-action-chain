@@ -34,6 +34,16 @@
 
 大型渲染 step 可以内部拆成多个 block，但每个 block 都要有验证，通过后才能继续。
 
+## 命令可移植性
+
+生成 Step Contract 时，不要默认使用某一种 shell 方言。
+
+- 如果目标环境没有明确是 Bash，避免直接写 `mkdir -p`、`rm -f`、`test -d`、heredoc 等 Unix shell 写法。
+- 如果目标环境没有明确是 PowerShell，避免直接写 PowerShell 专用命令作为唯一验证。
+- 默认优先把清理、转换、验证写成 `scripts/*.py` 这类跨平台脚本，再在 step 中调用 `python scripts/name.py`。
+- 如果必须使用 shell 命令，在 step 的输入或任务里明确运行环境，例如 `shell: bash` 或 `shell: PowerShell`。
+- 验证命令必须能在目标环境真实执行，不要只写概念性检查。
+
 ## 复查清单
 
 最终定稿前检查：
@@ -48,5 +58,6 @@
 - 失败策略是否有边界。
 - 是否存在 `TERMINAL`。
 - 是否写明隐藏依赖：cwd、凭据、当前时间、登录态、外部工具、定时任务。
+- 命令是否匹配目标 shell；不确定时是否改为跨平台脚本。
 - 不可逆动作是否有人工或外部门禁。
 - 执行 Agent 是否避免读取未来 step。

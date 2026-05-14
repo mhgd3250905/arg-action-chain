@@ -1,6 +1,6 @@
 # ARG Action Chain Designer Skill
 
-当前版本：`1.2.2`
+当前版本：`1.2.3`
 
 这是给 Agent 安装使用的 Skill，用来辅助创建、诊断和补强 ARG 行动链路。
 
