@@ -1,6 +1,6 @@
 ---
 name: arg-action-chain-designer
-version: "1.2.0"
+version: "1.2.1"
 description: Use this skill when the user wants to create, refine, review, or convert an agent task or existing skill into an ARG Action Chain / ARG 行动链路. This skill is especially relevant for recurring automations, multi-step agent jobs, data pipelines, report generation, MCP workflows, or tasks where agent drift, hallucinated fields, self-verification, premature planning, or uncontrolled long-context execution are risks. Trigger when the user mentions ARG, Step Contract, clue card, validation gate, progressive disclosure, reducing agent drift/self-deception, converting a normal skill into arg-xxx, or making a task chain more bounded and verifiable.
 ---
 
@@ -24,6 +24,14 @@ description: Use this skill when the user wants to create, refine, review, or co
 - 需要选择输出模式、转换已有 skill、形成最终回复：读取 `references/output-modes.md`
 
 不要一次性读取所有 reference。只读取当前任务需要的文件。
+
+真实任务里的最小读取规则：
+
+- 只做需求草案：读 `references/output-modes.md`
+- 产出 Step Contracts：读 `references/output-modes.md` 和 `references/step-contract-standard.md`
+- 生成文件级 ARG skill：再读 `references/runtime-template.md`
+- 涉及验证脚本、LLM 判断、raw/source 保护：再读 `references/validation-and-judgment.md`
+- 诊断已有链路：读 `references/step-contract-standard.md`，如果问题集中在验证或判断字段，再读 `references/validation-and-judgment.md`
 
 ## 核心模型
 
@@ -142,6 +150,14 @@ description: Use this skill when the user wants to create, refine, review, or co
 ```
 
 如果用户确认且工作区可写，直接创建或修改文件。若不可写，输出完整文件内容和建议路径。
+
+### 5. 自检
+
+在最终答复前，按实际输出读取必要 reference 做一次自检：
+
+- 有 Step Contract 时，用 `references/step-contract-standard.md` 检查 section、拆分、`TERMINAL` 和未来步骤遮蔽。
+- 有验证命令或 LLM 判断时，用 `references/validation-and-judgment.md` 检查字段边界、raw/source 保护和失败策略。
+- 有文件级交付物时，用 `references/runtime-template.md` 检查薄引擎、路径、禁止行为和运行入口。
 
 ## 转换已有 skill 的规则
 

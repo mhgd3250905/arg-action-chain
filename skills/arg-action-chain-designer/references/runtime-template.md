@@ -21,6 +21,17 @@ arg-name/
 
 `SKILL.md` 必须薄。业务细节放进 `plans/`，确定性处理放进 `scripts/`，运行产物放进 `output/`。
 
+## 路径放置策略
+
+上面的目录树是逻辑结构，不强制所有文件都放在已安装 skill 目录里。
+
+按运行环境选择：
+
+- 本地项目内一次性交付：可以生成 `skills/arg-name/`，其中包含 `SKILL.md`、`plans/`、`scripts/`、`output/`。
+- 已安装 skill / 定时任务 / 后台任务：`SKILL.md` 可以放在 runtime skills 目录，`plans/`、`scripts/`、`output/` 应放在稳定可写的数据目录或项目目录中，并在 `SKILL.md` 里使用绝对路径。
+- 如果输出目录可能被周期任务清理，清理 step 必须只清理 `output/`，不能删除 `plans/` 或 `scripts/`。
+- 如果路径依赖登录态、工作目录、容器路径或调度器路径，必须在 step 或 runtime `SKILL.md` 中显式写出。
+
 ## 薄 SKILL.md 模板
 
 按用户环境替换名称和路径。
