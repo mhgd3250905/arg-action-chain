@@ -1,6 +1,6 @@
 # ARG Action Chain Designer
 
-当前版本：`1.2.3`
+当前版本：`1.2.4`
 
 把 Agent 放进一条逐步解锁的行动链里，限制它在长任务中的发散、幻觉和自我欺骗。
 
@@ -78,6 +78,8 @@ ARG Action Chain 把这个机制映射到 Agent 工作流：
 
 `SKILL.md` 现在采用渐进式披露：主文件保留触发、架构和工作流，详细模板拆到 `references/`，包括 runtime 模板、Step Contract 标准、验证门禁和输出模式。
 
+可靠性模型收敛为两级：Level 1 普通 ARG 链用于基础任务；Level 2 外部门禁 ARG 链用于用户明确担心跳步、伪造输出或自我验收的场景。
+
 ![ARG Action Chain Designer 架构图](./assets/architecture.png)
 
 ## 安装
@@ -132,6 +134,7 @@ Copy-Item -Recurse skills\arg-action-chain-designer "$env:USERPROFILE\.agents\sk
             ├── runtime-template.md
             ├── step-contract-standard.md
             ├── validation-and-judgment.md
+            ├── reliability-levels.md
             └── output-modes.md
 ```
 

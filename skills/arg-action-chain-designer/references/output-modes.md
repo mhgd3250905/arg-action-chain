@@ -20,6 +20,9 @@
 ## 架构
 Static Progressive Clue Chain / 静态渐进线索链
 
+## 可靠性等级
+Level 1 普通 ARG 链 / 建议 Level 2 外部门禁 ARG 链
+
 ## 链路草图
 step-00-start -> step-01-name -> step-02-name -> TERMINAL
 

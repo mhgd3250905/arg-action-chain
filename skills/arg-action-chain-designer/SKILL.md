@@ -1,6 +1,6 @@
 ---
 name: arg-action-chain-designer
-version: "1.2.3"
+version: "1.2.4"
 description: Use this skill when the user wants to create, refine, review, or convert an agent task or existing skill into an ARG Action Chain / ARG 行动链路. This skill is especially relevant for recurring automations, multi-step agent jobs, data pipelines, report generation, MCP workflows, or tasks where agent drift, hallucinated fields, self-verification, premature planning, or uncontrolled long-context execution are risks. Trigger when the user mentions ARG, Step Contract, clue card, validation gate, progressive disclosure, reducing agent drift/self-deception, converting a normal skill into arg-xxx, or making a task chain more bounded and verifiable.
 ---
 
@@ -21,6 +21,7 @@ description: Use this skill when the user wants to create, refine, review, or co
 - 需要生成可运行 ARG skill：读取 `references/runtime-template.md`
 - 需要写或审 Step Contract：读取 `references/step-contract-standard.md`
 - 需要设计验证、脚本、LLM 判断字段：读取 `references/validation-and-judgment.md`
+- 用户提到跳步、伪造输出、不跑验证、自我验收、不可信 Agent、外部门禁：读取 `references/reliability-levels.md`
 - 需要选择输出模式、转换已有 skill、形成最终回复：读取 `references/output-modes.md`
 
 不要一次性读取所有 reference。只读取当前任务需要的文件。
@@ -31,6 +32,7 @@ description: Use this skill when the user wants to create, refine, review, or co
 - 产出 Step Contracts：读 `references/output-modes.md` 和 `references/step-contract-standard.md`
 - 生成文件级 ARG skill：再读 `references/runtime-template.md`
 - 涉及验证脚本、LLM 判断、raw/source 保护：再读 `references/validation-and-judgment.md`
+- 涉及防跳步、防伪造、自我验收、外部门禁：再读 `references/reliability-levels.md`
 - 诊断已有链路：读 `references/step-contract-standard.md`，如果问题集中在验证或判断字段，再读 `references/validation-and-judgment.md`
 
 ## 核心模型
@@ -55,6 +57,17 @@ description: Use this skill when the user wants to create, refine, review, or co
 - 验收权威来自验证命令、脚本、schema、断言或人工门禁，不来自 Agent 的自我声明。
 
 默认不要设计持久化进度文件。可运行链路每次都从 skill 引擎入口开始。只有用户明确要求“断点续跑、可恢复、长周期任务恢复”时，才额外设计状态机制，而且必须避免执行 Agent 通过编辑状态来伪造完成。
+
+## 可靠性等级
+
+默认只使用两级：
+
+- `Level 1 普通 ARG 链`：Step 文件包含【下一步】，执行 Agent 按规则运行验证后进入下一步。适合基础使用。
+- `Level 2 外部门禁 ARG 链`：执行 Agent 只产出当前 step 的 output；脚本、人工或独立 Agent 作为外部门禁，验证通过后才给出下一步启动线索。
+
+不要默认把基础任务复杂化为 Level 2。只有用户关心跳步、伪造输出、不跑验证、自我验收、不可信 Agent，或明确要求外部门禁时，才指出 Level 1 的局限，并建议 Level 2。
+
+详细说明见 `references/reliability-levels.md`。
 
 ## 核心立场
 
