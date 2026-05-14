@@ -1,6 +1,6 @@
 # ARG Action Chain Designer
 
-当前版本：`1.1.1`
+当前版本：`1.2.0`
 
 把 Agent 放进一条逐步解锁的行动链里，限制它在长任务中的发散、幻觉和自我欺骗。
 
@@ -76,6 +76,8 @@ ARG Action Chain 把这个机制映射到 Agent 工作流：
 
 当前默认架构是 **Static Progressive Clue Chain / 静态渐进线索链**：线索卡预先存在，但执行 Agent 运行时只能读取当前 step；当前 step 通过验证后，才能按该 step 末尾的 `下一步` 解锁下一张线索卡。业务细节放在 `plans/`，确定性处理放在 `scripts/`，运行入口 `SKILL.md` 保持很薄。
 
+`SKILL.md` 现在采用渐进式披露：主文件保留触发、架构和工作流，详细模板拆到 `references/`，包括 runtime 模板、Step Contract 标准、验证门禁和输出模式。
+
 ![ARG Action Chain Designer 架构图](./assets/architecture.png)
 
 ## 安装
@@ -125,7 +127,12 @@ Copy-Item -Recurse skills\arg-action-chain-designer "$env:USERPROFILE\.agents\sk
 └── skills/
     └── arg-action-chain-designer/
         ├── README.md
-        └── SKILL.md
+        ├── SKILL.md
+        └── references/
+            ├── runtime-template.md
+            ├── step-contract-standard.md
+            ├── validation-and-judgment.md
+            └── output-modes.md
 ```
 
 ## 核心原则

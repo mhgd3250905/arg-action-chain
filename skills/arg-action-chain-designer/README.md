@@ -1,10 +1,12 @@
 # ARG Action Chain Designer Skill
 
-当前版本：`1.1.1`
+当前版本：`1.2.0`
 
 这是给 Agent 安装使用的 Skill，用来辅助创建、诊断和补强 ARG 行动链路。
 
 它的定位类似 `skill-creator`：不是只解释 ARG 是什么，而是引导 Agent 把一个模糊任务变成可复用的链路资产，包括 `SKILL.md` 运行骨架、`plans/step-NN-name.md`、验证门禁和失败策略。
+
+`SKILL.md` 采用渐进式披露：主文件保留核心流程，详细模板在 `references/` 中按需读取。
 
 ## 安装到 Codex
 
