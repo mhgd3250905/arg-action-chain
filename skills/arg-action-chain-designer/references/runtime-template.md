@@ -21,16 +21,14 @@ arg-name/
 
 `SKILL.md` 必须薄。业务细节放进 `plans/`，确定性处理放进 `scripts/`，运行产物放进 `output/`。
 
-## 路径放置策略
+## 路径策略
 
-上面的目录树是逻辑结构，不强制所有文件都放在已安装 skill 目录里。
+默认把 `SKILL.md`、`plans/`、`scripts/`、`output/` 放在同一个 skill 目录里。这样最直观，也最符合文件级交付物的安装和复制方式。
 
-按运行环境选择：
+只保留两个安全要求：
 
-- 本地项目内一次性交付：可以生成 `skills/arg-name/`，其中包含 `SKILL.md`、`plans/`、`scripts/`、`output/`。
-- 已安装 skill / 定时任务 / 后台任务：`SKILL.md` 可以放在 runtime skills 目录，`plans/`、`scripts/`、`output/` 应放在稳定可写的数据目录或项目目录中，并在 `SKILL.md` 里使用绝对路径。
-- 如果输出目录可能被周期任务清理，清理 step 必须只清理 `output/`，不能删除 `plans/` 或 `scripts/`。
-- 如果路径依赖登录态、工作目录、容器路径或调度器路径，必须在 step 或 runtime `SKILL.md` 中显式写出。
+- 清理 step 只能清理 `output/`，不能删除 `plans/` 或 `scripts/`。
+- 如果运行环境确实需要绝对路径、容器路径或调度器路径，必须在 `SKILL.md` 或 step 中显式写出；这属于特殊部署，不是默认模板。
 
 ## 薄 SKILL.md 模板
 
@@ -52,9 +50,9 @@ allowed-tools: Bash
 不要从普通自然语言问题中猜测触发，除非用户明确要求执行这条链。
 
 ```text
-设 OUTPUT_DIR = "[absolute-or-project output path]"
-设 PLANS_DIR = "[absolute-or-project plans path]"
-设 SCRIPTS_DIR = "[absolute-or-project scripts path]"
+设 OUTPUT_DIR = "output"
+设 PLANS_DIR = "plans"
+设 SCRIPTS_DIR = "scripts"
 设 "当前步" = "step-00-start"
 
 循环：
