@@ -1,5 +1,7 @@
 # ARG Action Chain Designer Skill
 
+当前版本：`1.1.0`
+
 这是给 Agent 安装使用的 Skill，用来辅助创建、诊断和补强 ARG 行动链路。
 
 它的定位类似 `skill-creator`：不是只解释 ARG 是什么，而是引导 Agent 把一个模糊任务变成可复用的链路资产，包括 `SKILL.md` 运行骨架、`plans/step-NN-name.md`、验证门禁和失败策略。
@@ -24,6 +26,10 @@ Copy-Item -Recurse skills\arg-action-chain-designer "$env:USERPROFILE\.agents\sk
 
 ```text
 把这个普通 skill 优化成 ARG 任务链路，让它按 Step Contract 执行。
+```
+
+```text
+把这个已有 skill 转成 arg-xxx，不覆盖原 skill，并生成薄 SKILL.md + plans/step-*.md + scripts/ 交付物。
 ```
 
 ```text

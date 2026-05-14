@@ -1,5 +1,7 @@
 # ARG Action Chain Designer
 
+当前版本：`1.1.0`
+
 把 Agent 放进一条逐步解锁的行动链里，限制它在长任务中的发散、幻觉和自我欺骗。
 
 ![让 Agent 像 ARG 玩家一样工作](./assets/arg-agent-player.png)
@@ -68,8 +70,11 @@ ARG Action Chain 把这个机制映射到 Agent 工作流：
 - 每个 Step Contract 的输入、任务、输出、验证命令、失败处理和下一步
 - 验证门禁、人工门禁和失败策略
 - 对已有链路的缺口诊断
+- 在用户需要时，继续落成文件级交付物：薄 `SKILL.md` 引擎、`plans/step-*.md` 线索卡、必要的 `scripts/` 验证或转换脚本草案
 
 它尤其适合重复执行、结构化产出、需要验证门禁的长任务。开放式研究、头脑风暴、纯主观创作就别硬套了，硬套只会把聪明事做成笨流程。
+
+当前默认架构是 **Static Progressive Clue Chain / 静态渐进线索链**：线索卡预先存在，但执行 Agent 运行时只能读取当前 step；当前 step 通过验证后，才能按该 step 末尾的 `下一步` 解锁下一张线索卡。业务细节放在 `plans/`，确定性处理放在 `scripts/`，运行入口 `SKILL.md` 保持很薄。
 
 ![ARG Action Chain Designer 架构图](./assets/architecture.png)
 
@@ -99,6 +104,10 @@ Copy-Item -Recurse skills\arg-action-chain-designer "$env:USERPROFILE\.agents\sk
 
 ```text
 把这个普通 skill 优化成 ARG 任务链路，让它按 Step Contract 执行。
+```
+
+```text
+把这个已有 skill 转成 arg-xxx，不覆盖原 skill，并生成文件级交付物。
 ```
 
 ## 仓库结构

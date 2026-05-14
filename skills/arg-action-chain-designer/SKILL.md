@@ -1,42 +1,76 @@
 ---
 name: arg-action-chain-designer
-description: Use this skill when the user wants to create, refine, review, or execute-design an ARG Action Chain / ARG 行动链路 for an agent task, skill workflow, MCP workflow, recurring automation, data pipeline, or multi-step agent job. Triggers include designing Step Contracts, turning vague agent tasks into bounded ARG requirements, reducing agent drift or self-verification, limiting LLM semantic judgment to structured fields, adding validation gates, diagnosing existing chains, or converting a normal skill into an ARG-style task chain.
+version: "1.1.0"
+description: Use this skill when the user wants to create, refine, review, or convert an agent task or existing skill into an ARG Action Chain / ARG 行动链路. This skill is especially relevant for recurring automations, multi-step agent jobs, data pipelines, report generation, MCP workflows, or tasks where agent drift, hallucinated fields, self-verification, premature planning, or uncontrolled long-context execution are risks. Trigger when the user mentions ARG, Step Contract, clue card, validation gate, progressive disclosure, reducing agent drift/self-deception, converting a normal skill into arg-xxx, or making a task chain more bounded and verifiable.
 ---
 
 # ARG Action Chain Designer
 
 ## Mission
 
-Help the user turn an agent task into an ARG 行动链路: a controlled sequence of Step Contracts where the agent sees the current clue card, executes only that step, passes validation, then unlocks the next step.
+Turn a vague agent task, existing skill, or repeated workflow into a reusable ARG Action Chain: a static progressive clue chain where the runtime agent sees only the current Step Contract, executes it, passes validation, then unlocks the next clue.
 
-This skill is closer to `skill-creator` than to a generic architecture essay. Guide the user toward a reusable task-chain artifact, not just a nice explanation.
+The default goal is not to give advice and stop. Produce a usable design first, then explicitly ask whether the user wants a file-level deliverable. If the user already asks to create, generate, write, land, or package the chain, create the deliverable directly when the workspace is writable.
+
+## Core Model: Static Progressive Clue Chain
+
+Use this as the default architecture.
+
+```text
+thin SKILL.md engine
+  -> read only current plans/step-NN-name.md
+  -> execute current task
+  -> produce structured artifacts in output/
+  -> run the step validation command
+  -> if validation passes, read the current step's 下一步 field
+  -> repeat until TERMINAL
+```
+
+Meaning:
+
+- `Static`: clue cards exist before runtime. The executing agent does not invent the route.
+- `Progressive`: only the current clue card is visible during execution.
+- `Clue Chain`: each `plans/step-*.md` is a Step Contract unlocked by validation.
+- Previous step outputs become the next step inputs.
+- Verification gates, scripts, schemas, or human gates are the acceptance authority, not the agent's self-report.
+
+Do not default to persistent progress files. A runnable chain starts from the skill engine each time. Add resumable state only when the user explicitly asks for 断点续跑 / resumability / long-cycle recovery, and then design it so the executing agent cannot forge completion by editing state.
+
+## Proven Runtime Shape
+
+When producing a runnable ARG skill, mirror this shape:
+
+```text
+arg-name/
+├── SKILL.md
+├── plans/
+│   ├── step-00-start.md
+│   ├── step-01-fetch.md
+│   ├── step-02-process.md
+│   └── step-NN-final.md
+├── scripts/
+│   ├── extract_for_judgment.*
+│   ├── merge_or_transform.*
+│   └── validate_*.*
+└── output/
+```
+
+Keep `SKILL.md` thin. Business details belong in `plans/`. Deterministic work belongs in `scripts/`. Runtime artifacts belong in `output/`.
 
 ## Core Stance
 
-Treat agent reliability as engineering, not vibes.
+Treat the executing agent as capable but untrusted.
 
-- Agent is the player, not the puzzle designer.
-- Step Contract is the smallest action boundary.
+- The agent is the player, not the puzzle designer.
+- The Step Contract is the smallest action boundary.
+- The agent must not see the full map while executing.
 - Validation is the gate, not a suggestion.
-- LLM judgment must be boxed into fields, enums, examples, schemas, or human gates.
+- LLM judgment must be boxed into fields, enums, examples, schemas, and merge scripts.
+- Raw source data should be preserved by scripts, not rewritten by the agent.
 - Deterministic work belongs in scripts, validators, or narrow commands.
-- ARG reduces the surface area for drift, hallucination, and self-verification; it does not magically eliminate them.
+- Human gates are required for irreversible actions, external sends, sensitive business judgment, or subjective approval.
 
-If ARG is overkill or the task cannot be validated, say so directly and suggest a better pattern.
-
-## What To Produce
-
-Depending on the user's request, produce one or more of these artifacts:
-
-- A fit decision: whether ARG is appropriate.
-- ARG requirements: final artifact, inputs, allowed judgment, deterministic operations, validation policy, failure policy.
-- A chain map: `step-01-name -> step-02-name -> TERMINAL`.
-- Step Contracts: one self-contained contract per step.
-- Validation gates: commands, schema checks, checklist gates, or human review gates.
-- A runtime skill outline: a small `SKILL.md` engine that reads only the current step.
-- A review report for an existing chain.
-
-Avoid dumping a complete full-map workflow into a runtime `SKILL.md`. The runtime skill should contain the engine and rules; business steps belong in `plans/step-NN-name.md`.
+If ARG is overkill or the task cannot be validated, say so directly and suggest a simpler pattern.
 
 ## Fit Decision
 
@@ -45,39 +79,38 @@ Recommend ARG when most are true:
 - The task has multiple steps.
 - The task repeats or needs stable execution.
 - Each step can produce a concrete artifact or observable state.
-- Each artifact can be checked by a command, schema, checklist, or human gate.
+- Each artifact can be checked by a command, schema, assertion, checklist, or human gate.
 - LLM judgment is needed only in bounded places.
 - Failure behavior matters.
 
-Do not recommend ARG as the primary pattern when the task is:
+Do not use ARG as the primary pattern when the task is:
 
 - Open-ended research.
 - Brainstorming or strategy discussion.
 - Highly interactive conversation.
 - Purely subjective creation.
 - A one-step query.
-- A task where the agent must discover the path dynamically.
+- A task where the agent must freely discover the path during execution.
 
-If ARG is not the right fit, recommend a better pattern: pure script, ReAct, plan-and-execute, DAG workflow, human collaboration, or ARG plus human gates.
+Better alternatives may be: pure script, regular skill, ReAct, plan-and-execute, DAG workflow, human collaboration, or ARG with explicit human gates.
 
 ## Workflow
 
 ### 1. Understand The Task
 
-First infer what is already known. Ask at most one critical question if execution would otherwise be risky or fake. Prefer proceeding with explicit assumptions when safe.
+Infer what is already known from the user request and repository context. Ask at most one critical question if proceeding would otherwise fake certainty. Prefer explicit assumptions when safe.
 
 Capture:
 
-- Final artifact: what should exist at the end.
-- Inputs: files, APIs, user context, credentials, schedules, or external systems.
-- Deterministic work: what scripts or commands should do.
-- LLM judgment: what only the model can judge.
+- Final artifact.
+- Inputs: files, APIs, user context, credentials, schedule, external systems.
+- Deterministic work: scripts, commands, transforms, validation.
+- LLM judgment: exactly which fields require semantic judgment.
 - Validation: how each result is checked.
 - Failure policy: retry, skip, degrade, stop, or human review.
+- Delivery intent: design-only or file-level chain package.
 
-If too much is unknown, produce a question map instead of pretending the design is complete.
-
-### 2. Choose The Pattern
+### 2. Choose The Outcome
 
 State one clear decision:
 
@@ -86,62 +119,173 @@ State one clear decision:
 - `不适合 ARG`
 - `先用普通 skill，后续再 ARG 化`
 
-Briefly explain the reason. Do not sell ARG like万能药，那个味儿太重。
+Then produce the design. Do not stop at a generic recommendation.
 
-### 3. Design The Chain Package
+### 3. Design The Chain
 
-For a new chain, propose this minimal structure unless the user's environment requires another layout:
+Produce:
+
+- Task boundary.
+- Chain sketch.
+- Step Contracts.
+- Validation gates.
+- Failure policy.
+- Runtime skill skeleton.
+- Risks and补强.
+
+Use `step-00-*` for setup/cleanup/entry when the chain has a real runtime initialization step. Use `TERMINAL` as the final next marker.
+
+### 4. Offer File-Level Delivery
+
+After the design is clear, ask once whether the user wants the file-level deliverable, unless they already asked to create/write/generate/land/package it.
+
+Use wording like:
 
 ```text
-skill-or-chain-name/
-├── SKILL.md
-├── plans/
-│   ├── step-01-name.md
-│   ├── step-02-name.md
-│   └── step-03-name.md
-└── scripts/
-    ├── validate_step_01.*
-    └── merge_or_transform.*
+我可以继续把它落成文件级交付物：
+- `SKILL.md` 薄运行引擎
+- `plans/step-*.md` Step Contracts
+- 必要的 `scripts/validate_*.py` / transform scripts 草案
+
+如果你要，我下一步直接生成这些文件。
 ```
 
-Use `scripts/` only when deterministic reliability is needed. Do not invent scripts just to look serious.
+If the user confirms and the workspace is writable, create or modify files. If not writable, output complete file contents and recommended paths.
 
-### 4. Draft Step Contracts
+## Existing Skill Conversion Rules
 
-Each step must do one kind of work. Split steps when a single step fetches, classifies, renders, and notifies at once.
+When the user wants to ARG-wrap an existing skill:
 
-Every Step Contract must include:
+- Do not overwrite the original skill by default.
+- If the original skill is named `foo`, create a new skill named `arg-foo`.
+- Read the original skill as source material, then design the new ARG runtime around the static progressive clue chain.
+- Only edit or replace the original skill if the user explicitly says to overwrite it.
+- Do not write "Derived from foo" or similar provenance inside the generated runtime `SKILL.md`; it can confuse the executing agent. Mention provenance only in the final report or external notes if useful.
+- Preserve the original skill's useful domain behavior, but move business steps into `plans/` and keep the new `SKILL.md` as a thin engine.
 
-- 输入
-- 任务
-- 输出
-- 验证命令
-- 验证失败处理
-- 下一步
+When the user starts from a new requirement rather than an existing skill, choose a descriptive name such as `arg-report-reviewer`, `arg-data-cleanup-chain`, or another domain-specific `arg-*` name.
 
-When semantic judgment is needed, define exact output fields and allowed values. Preserve raw data outside the agent's editable fields.
+## Step Contract Standard
 
-### 5. Design Validation Gates
+Each `plans/step-NN-name.md` must be self-contained and include these sections:
 
-Prefer hard validation:
+```md
+# Step NN: [Name]
+
+## 输入
+[Explicit files, APIs, user-provided context, or "无"]
+
+## 任务
+[Commands or bounded semantic instructions. One kind of work only.]
+
+## 输出
+[Exact artifact paths, object shape, status file, or visible result]
+
+## 验证命令
+[Executable command, schema check, assertion, checklist, or human gate]
+
+## 验证失败处理
+[Retry limit, skip/degrade/stop/human review, and where failure is recorded]
+
+## 下一步
+`plans/step-NN-next.md` or `TERMINAL`
+```
+
+Split a step when it fetches, classifies, renders, and notifies at once. A large render step may contain internal blocks only when each block has its own validation before continuing.
+
+## Thin Runtime SKILL.md Template
+
+Use this pattern when generating a runnable ARG skill. Adapt names and paths to the user's environment.
+
+````md
+---
+name: arg-name
+description: Only use this skill when the user explicitly invokes /arg-name or clearly asks to run this ARG chain. Executes [domain] through a static progressive clue chain with validation gates.
+allowed-tools: Bash
+---
+
+# arg-name
+
+## 触发方式
+
+仅接受显式命令触发：`/arg-name`
+
+不要从普通自然语言问题中猜测触发，除非用户明确要求执行这条链。
+
+```text
+设 OUTPUT_DIR = "[absolute-or-project output path]"
+设 PLANS_DIR = "[absolute-or-project plans path]"
+设 SCRIPTS_DIR = "[absolute-or-project scripts path]"
+设 "当前步" = "step-00-start"
+
+循环：
+1. 读取 PLANS_DIR/当前步.md
+2. 严格按文件中的【任务】说明执行
+3. 执行文件中的【验证命令】
+4. 验证通过 → 读取文件末尾【下一步】，赋值给当前步
+5. 验证失败 → 按文件中的【验证失败处理】执行
+6. 当前步 = "TERMINAL" → 退出循环，输出执行汇报
+```
+
+起始：读取 `PLANS_DIR/step-00-start.md`。
+
+## 关键原则
+
+1. **逐步揭示**：你只知道当前这一步。每步末尾的【下一步】会告诉你该读哪个文件。不要推测或预判后续步骤。
+2. **验证门禁**：每步必须通过验证命令才能进入下一步。验证失败必须按失败处理执行。
+3. **字段受限**：当步骤要求你填写判断字段时，只填写被授权字段，不能修改 raw/source 字段。
+4. **路径稳定**：命令使用约定的 OUTPUT_DIR/PLANS_DIR/SCRIPTS_DIR，不依赖未知工作目录。
+5. **不得自证**：不能用“我检查过了”代替验证命令或人工门禁。
+````
+
+The runtime `SKILL.md` must not include the full business map outside the engine. The map lives in the step files and is revealed one step at a time.
+
+## LLM Judgment Boxing
+
+When a step needs semantic judgment, make the agent fill only a small structured artifact:
+
+```json
+[
+  {
+    "index": 0,
+    "relevant": "yes",
+    "summary": "中文概括，不超过 60 字",
+    "sentiment": "正向",
+    "date_iso": "2026-05-06 14:30"
+  }
+]
+```
+
+Rules:
+
+- Define allowed enum values inline.
+- Give boundary examples when labels are easy to confuse.
+- Use an extractor script to provide only the fields needed for judgment.
+- Use a merge script to copy raw fields from source data and merge only authorized judgment fields.
+- Validate counts, required fields, enum values, date formats, placeholder leakage, and raw-field preservation.
+
+## Validation Gate Design
+
+Prefer hard checks:
 
 - File exists and is non-empty.
 - JSON/YAML parses.
 - Schema matches.
-- Counts are consistent.
+- `total == len(items)` or equivalent count consistency.
 - Enum values are legal.
 - Required fields are non-empty.
 - No placeholders leaked.
 - Raw source fields are unchanged.
-- Database rows or report counts match source data.
+- Rendered output contains required sections and no forbidden constructs.
+- External action has explicit success evidence.
 
-Use soft checks only when hard checks are impossible. Use human gates for external sending, irreversible actions, high-stakes business judgment, or subjective quality.
+Use soft checks only when hard checks are impossible. Use human gates for external sending, irreversible actions, compliance-sensitive decisions, or subjective quality.
 
-Never accept "agent should carefully check" as the only validation. That is not validation; that is a politely worded trap.
+Never accept "agent should carefully check" as the only validation.
 
-### 6. Define Failure Handling
+## Failure Handling Standard
 
-Every step needs a specific failure policy:
+Every step needs a specific policy:
 
 - Hard fail: stop or require human review.
 - Soft fail: retry with a limit.
@@ -149,27 +293,28 @@ Every step needs a specific failure policy:
 - Validation fail: regenerate only the authorized output, then re-run validation.
 - External action fail: do not retry blindly; require idempotency or human approval.
 
-Specify retry count, stop condition, and where failure state is recorded.
+Always specify retry count and stop condition.
 
-### 7. Review For Drift
+## Review Checklist
 
-Before finalizing, inspect the design for:
+Before finalizing a chain, check:
 
-- One step doing multiple unrelated jobs.
-- Inputs or outputs that are implied but not named.
-- Validation that checks only existence.
-- Failure handling with no retry limit or stop condition.
-- Agent allowed to edit raw data.
-- Missing `TERMINAL`.
-- Hidden dependency on current directory, time, credentials, global state, or prior conversation.
-- Subjective approval pretending to be a script.
-- Runtime `SKILL.md` revealing the full business map when the chain is meant to be progressively disclosed.
+- Is the runtime `SKILL.md` thin?
+- Are business details in `plans/`, not in the engine?
+- Does every step have 输入 / 任务 / 输出 / 验证命令 / 验证失败处理 / 下一步?
+- Does every step do one kind of work?
+- Does validation check structure and content, not just existence?
+- Are raw/source fields protected from agent edits?
+- Are LLM judgment fields boxed into enums and small summaries?
+- Are failure policies bounded?
+- Is there a `TERMINAL`?
+- Are hidden dependencies named: cwd, credentials, time, login state, external tools, schedules?
+- Are irreversible actions behind human or explicit external gates?
+- Does the executing agent avoid reading future steps?
 
 ## Output Modes
 
-Choose the mode that matches the user request.
-
-### Mode A: Create A New ARG Chain
+### Mode A: Design A New ARG Chain
 
 Use when the user asks to design, build, or convert a task into ARG.
 
@@ -186,11 +331,14 @@ Output:
 - 必须脚本化：
 - 验收权威：
 
+## 架构
+Static Progressive Clue Chain / 静态渐进线索链
+
 ## 链路草图
-step-01-name -> step-02-name -> TERMINAL
+step-00-start -> step-01-name -> step-02-name -> TERMINAL
 
 ## Step Contracts
-### step-01-name
+### step-00-start
 - 输入：
 - 任务：
 - 输出：
@@ -200,15 +348,17 @@ step-01-name -> step-02-name -> TERMINAL
 
 ## 运行 Skill 骨架
 - 触发方式：
-- 当前步变量：
-- plans 目录：
+- OUTPUT_DIR：
+- PLANS_DIR：
+- SCRIPTS_DIR：
+- 当前步：
 - 禁止行为：
 
 ## 风险和补强
 - ...
 
-## 最小下一步
-...
+## 文件级交付物
+询问用户是否需要继续生成 `SKILL.md`、`plans/step-*.md`、必要 scripts。
 ```
 
 ### Mode B: Review An Existing Chain
@@ -235,7 +385,32 @@ Output:
 - ...
 ```
 
-### Mode C: Turn A Vague Task Into Requirements
+### Mode C: Convert Existing Skill To arg-xxx
+
+Use when the user wants to optimize or convert an existing skill.
+
+Output:
+
+```md
+## 转换策略
+- 原 skill：
+- 新 skill：
+- 是否覆盖原 skill：否，除非用户明确要求
+
+## 保留能力
+- ...
+
+## ARG 化改造
+- 薄 `SKILL.md` 引擎：
+- `plans/` Step Contracts：
+- `scripts/` 确定性处理：
+- `output/` 产物：
+
+## 下一步
+询问是否生成文件级 `arg-xxx` 交付物；若用户已要求生成，则直接创建。
+```
+
+### Mode D: Turn A Vague Task Into Requirements
 
 Use when the user only has an idea.
 
@@ -252,100 +427,27 @@ Output a compact requirements brief:
 - 验证策略：
 - 失败策略：
 
-## 问题地图
-1. ...
+## 最小链路草图
+step-00-start -> step-01-name -> TERMINAL
+
+## 需要确认的一问
+...
 ```
-
-### Mode D: Optimize An ARG Skill
-
-Use when the user wants to improve a skill that creates or runs ARG chains.
-
-Check:
-
-- Does the frontmatter description include concrete triggers?
-- Is `SKILL.md` lean enough to load without wasting context?
-- Is the body procedural, not promotional?
-- Does it create reusable artifacts: plans, validators, scripts, runtime rules?
-- Does it prevent future-step leakage where progressive disclosure matters?
-- Does it define validation and failure handling?
-- Does it tell the agent when not to use ARG?
-
-Prefer editing the existing skill before creating new files. Create `references/` only if detailed examples or long rubrics would bloat `SKILL.md`.
-
-## Step Contract Template
-
-Use this template when drafting a step:
-
-```md
-# Step NN: [Name]
-
-## 输入
-[Explicit files, APIs, user-provided context, or "none"]
-
-## 任务
-[Commands or bounded semantic instructions]
-
-## 输出
-[Exact artifact path, object, status file, or visible result]
-
-## 验证命令
-[Executable command, schema check, checklist, or human gate]
-
-## 验证失败处理
-[Retry limit, skip/degrade/stop/human review, and failure-state location]
-
-## 下一步
-`step-NN-next` or `TERMINAL`
-```
-
-## LLM Judgment Boxing
-
-Convert semantic judgment into bounded fields:
-
-```md
-For each item, fill:
-- relevant: yes / no / uncertain
-- category: bug / feature / question / other
-- severity: high / medium / low
-- summary: <= 80 Chinese characters
-```
-
-Add boundary examples when labels can be confused. Boundary examples beat long philosophical instructions.
-
-## Runtime Skill Engine Pattern
-
-When designing a runnable ARG skill, keep the engine small:
-
-```text
-Set:
-  PLANS_DIR = "plans"
-  CURRENT_STEP = "step-01-name"
-
-Loop:
-  1. Read only PLANS_DIR/CURRENT_STEP.md.
-  2. Execute only the current step.
-  3. Run the validation command.
-  4. If validation passes, set CURRENT_STEP to 下一步.
-  5. If validation fails, follow 验证失败处理.
-  6. If CURRENT_STEP is TERMINAL, stop and report evidence.
-```
-
-Runtime rules:
-
-- Do not read future steps before the current step passes validation.
-- Do not modify step files while running the chain.
-- Do not invent fields, labels, outputs, or next steps.
-- Do not claim success without validation evidence.
-- Only write fields explicitly assigned to the agent.
 
 ## Final Response Standard
 
-End with concrete next action, not motivational fog.
+End with the next concrete action. For design-only requests, ask whether to create the file-level deliverable. For generation requests, report changed/created files and verification evidence.
 
 Good:
 
 ```text
-下一步：先写 `plans/step-01-fetch.md` 和 `scripts/validate_step_01.py`，因为 step-02 依赖 raw 数据结构。
+我可以继续把它落成 `arg-competitor-monitor/`：薄 `SKILL.md`、4 个 step contracts、2 个验证脚本。你确认要文件级交付物的话，我下一步直接生成。
+```
+
+Good after file generation:
+
+```text
+已生成 `skills/arg-foo/`。关键文件是 `SKILL.md`、`plans/step-00-start.md`、`plans/step-01-fetch.md`、`scripts/validate_step_01.py`。已检查每个 step 都包含六个必需 section，且终点为 `TERMINAL`。
 ```
 
 Bad:
